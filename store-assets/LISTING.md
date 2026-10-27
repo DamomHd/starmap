@@ -161,12 +161,13 @@ Chrome 商店上架时，每个权限都要填写理由：
 ## 待办清单
 
 - [ ] 注册 Chrome Web Store 开发者账号（$5，需准备双币信用卡）
-- [ ] 推送代码到 GitHub 并开启 GitHub Pages 托管 `docs/index.html`（获得公开的隐私政策 HTTPS URL）
-- [ ] 替换 `PRIVACY.md` 与文档中的真实 GitHub 仓库地址
+- [x] 推送代码到 GitHub 并开启 GitHub Pages 托管 `docs/index.html`：
+  - **公开隐私政策 URL**：`https://damomhd.github.io/starmap/`
+- [x] 替换 `PRIVACY.md` 与文档中的真实 GitHub 仓库地址（`https://github.com/DamomHd/starmap`）
 - [x] 打包扩展 ZIP 包（运行 `pnpm zip`，已生成无多余缓存、已剔除 key 字段的干净产物）
 - [ ] 登录 Chrome Web Store Developer Console 上传 `starmap-0.1.0-chrome.zip`
 - [ ] 上传应用图标（`dist/icon-128.png`）
 - [ ] 上传应用截图（`store-assets/screenshot-1.png`、`2.png`、`3.png`）
 - [ ] 填写应用上架文案（从本文档复制）
-- [ ] 填写隐私权声明与权限理由（从本文档复制）
+- [ ] 填写隐私权声明与权限理由（从本文档复制，隐私政策 URL 填 `https://damomhd.github.io/starmap/`）
 - [ ] 提交审核（通常 1~3 个工作日完成）
