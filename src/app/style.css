@@ -1,0 +1,1955 @@
+/*
+ * 设计基础：**直接采用 GitHub Primer 的 token 命名**。
+ *
+ * 为什么不用自己的一套变量名（--bg / --surface / --accent）：
+ * 星标页注入的那部分 UI 天然只能用 Primer token（那是 GitHub 页面提供的），
+ * 如果工作台用另一套，两边就会长得不一样——一个像插件，一个像外挂。
+ * 用同一套命名，组件代码可以在两个容器里无缝复用，视觉语言也真正统一。
+ *
+ * 工作台是独立页面（不受 GitHub 的明暗主题切换影响），所以这里**同时定义
+ * 明暗两套**，跟随系统偏好。
+ */
+:root {
+  color-scheme: light dark;
+
+  /* 语义别名：老代码还在用，保留兼容，映射到 Primer token */
+  --bg: var(--bgColor-default);
+  --surface: var(--bgColor-muted);
+  --surface-2: var(--bgColor-emphasis);
+  --fg: var(--fgColor-default);
+  --muted: var(--fgColor-muted);
+  --accent: var(--fgColor-accent);
+  --border: var(--borderColor-default);
+  --tag-bg: var(--bgColor-accent-muted);
+}
+
+/*
+ * ── 主题机制 ──
+ *
+ * JS 会在 <html> 上设置 data-theme，取值只有三种：
+ *   "light" / "dark" → 手动固定
+ *   不设置（或 "system"）→ 跟随系统
+ *
+ * prefers-color-scheme 的默认值是 light，所以「亮色变量」不需要媒体查询，
+ * 直接作为 :root 的基线；暗色变量才需要按路径覆盖。
+ */
+
+/* 亮色基线（无属性 / 手动 light 都用这套） */
+:root {
+  --bgColor-default: #ffffff;
+  --bgColor-muted: #f6f8fa;
+  --bgColor-inset: #f6f8fa;
+  --bgColor-emphasis: #eaeef2;
+  --bgColor-emphasis-hover: #eff2f5;
+  --bgColor-accent-muted: #ddf4ff;
+
+  --fgColor-default: #1f2328;
+  --fgColor-muted: #59636e;
+  --fgColor-accent: #0969da;
+  --fgColor-success: #1a7f37;
+  --fgColor-attention: #9a6700;
+  --fgColor-danger: #d1242f;
+
+  --borderColor-default: #d1d9e0;
+  --borderColor-muted: #d1d9e0b3;
+  --borderColor-emphasis: #818b98;
+
+  --button-primary-bgColor-rest: #1f883d;
+  --button-primary-bgColor-hover: #1c8139;
+
+  --shadow-resting-small: 0 1px 1px 0 #1f23280a, 0 1px 2px 0 #1f232808;
+  --shadow-floating-small: 0 0 0 1px #d1d9e040, 0 6px 12px -3px #25292e0a,
+    0 6px 18px 0 #25292e1f;
+}
+
+/*
+ * 手动选暗色：直接覆盖。
+ * ⚠️ 下面这段暗色变量与文件末尾的 `@media` 块**内容完全相同**，
+ * 改一处必须改两处（纯 CSS 没有 mixin，只能这样）。
+ */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bgColor-default: #0d1117;
+  --bgColor-muted: #151b23;
+  --bgColor-inset: #010409;
+  --bgColor-emphasis: #262c36;
+  --bgColor-emphasis-hover: #2f3742;
+  --bgColor-accent-muted: #121d2f;
+
+  --fgColor-default: #f0f6fc;
+  --fgColor-muted: #9198a1;
+  --fgColor-accent: #4493f8;
+  --fgColor-success: #3fb950;
+  --fgColor-attention: #d29922;
+  --fgColor-danger: #f85149;
+
+  --borderColor-default: #3d444d;
+  --borderColor-muted: #3d444db3;
+  --borderColor-emphasis: #656c76;
+
+  --button-primary-bgColor-rest: #238636;
+  --button-primary-bgColor-hover: #29903b;
+
+  --shadow-resting-small: 0 1px 1px 0 #01040933, 0 1px 2px 0 #01040933;
+  --shadow-floating-small: 0 0 0 1px #3d444d40, 0 6px 12px -3px #0104090a,
+    0 6px 18px 0 #0104091f;
+}
+
+/* 跟随系统：系统是暗色且用户没手动选亮色 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --bgColor-default: #0d1117;
+    --bgColor-muted: #151b23;
+    --bgColor-inset: #010409;
+    --bgColor-emphasis: #262c36;
+    --bgColor-emphasis-hover: #2f3742;
+    --bgColor-accent-muted: #121d2f;
+
+    --fgColor-default: #f0f6fc;
+    --fgColor-muted: #9198a1;
+    --fgColor-accent: #4493f8;
+    --fgColor-success: #3fb950;
+    --fgColor-attention: #d29922;
+    --fgColor-danger: #f85149;
+
+    --borderColor-default: #3d444d;
+    --borderColor-muted: #3d444db3;
+    --borderColor-emphasis: #656c76;
+
+    --button-primary-bgColor-rest: #238636;
+    --button-primary-bgColor-hover: #29903b;
+
+    --shadow-resting-small: 0 1px 1px 0 #01040933, 0 1px 2px 0 #01040933;
+    --shadow-floating-small: 0 0 0 1px #3d444d40, 0 6px 12px -3px #0104090a,
+      0 6px 18px 0 #0104091f;
+  }
+}
+
+/* 圆角与字体：与 GitHub 一致 */
+:root {
+  --borderRadius-medium: 6px;
+  --borderRadius-large: 12px;
+  --fontStack-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+    Helvetica, Arial, sans-serif;
+  --fontStack-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--fontStack-system);
+  background: var(--bgColor-default);
+  color: var(--fgColor-default);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  /* 数字等宽：星标数、计数对齐时不跳动 */
+  font-variant-numeric: tabular-nums;
+}
+
+#app {
+  height: 100%;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+h1,
+h2 {
+  margin: 0;
+}
+
+code {
+  background: var(--surface);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-family: ui-monospace, monospace;
+}
+
+.muted {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.hint {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.hint.small {
+  font-size: 12px;
+  padding: 12px 8px;
+}
+
+/* ── 欢迎/登录页 ── */
+.welcome {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  /* 页面底色退一层，让卡片能浮起来——纯白底 + 浅灰卡片对比太弱 */
+  background: var(--bgColor-inset);
+}
+
+.welcome-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bgColor-default);
+  border: 1px solid var(--borderColor-default);
+  border-radius: var(--borderRadius-large);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--shadow-floating-small);
+}
+
+.welcome-card.wide {
+  max-width: 620px;
+}
+
+.welcome-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.welcome-brand h1 {
+  font-size: 19px;
+  margin-bottom: 3px;
+}
+
+.logo.big {
+  font-size: 26px;
+}
+
+/* ── 登录引导 ── */
+.guide {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.guide h2 {
+  font-size: 16px;
+  color: var(--fg);
+}
+
+.guide-lead {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ── 隐私承诺：一行 + 可展开 ── */
+.privacy-line {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--fgColor-muted);
+  line-height: 1.5;
+}
+
+.privacy-line svg {
+  color: var(--fgColor-success, #1a7f37);
+  flex-shrink: 0;
+}
+
+.privacy-more {
+  background: none;
+  border: none;
+  color: var(--fgColor-accent);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0 0 0 6px;
+  font-family: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.privacy-more:hover {
+  text-decoration-thickness: 2px;
+}
+
+.privacy-list {
+  margin: 0;
+  padding: 8px 12px 8px 28px;
+  font-size: 11.5px;
+  color: var(--fgColor-muted);
+  line-height: 1.7;
+  background: var(--bgColor-muted);
+  border-radius: var(--borderRadius-medium);
+  list-style: disc;
+}
+
+.privacy-list li + li {
+  margin-top: 3px;
+}
+
+.privacy-list code {
+  font-size: 11px;
+}
+
+.privacy-list.compact {
+  font-size: 11.5px;
+  line-height: 1.7;
+  padding-left: 18px;
+}
+
+/* 一键重连横幅 */
+.reconnect-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #2f81f715;
+  border: 1px solid #2f81f755;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.reconnect-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.reconnect-text strong {
+  font-size: 13px;
+  color: var(--fg);
+}
+
+.reconnect-text span {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.reconnect-btn {
+  width: auto;
+  padding: 7px 16px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* ── 账户区 ── */
+.account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.account-id {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.account-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.account-login {
+  font-size: 13px;
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.account-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.account-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 2px 0;
+}
+
+.account-label {
+  width: 42px;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--muted);
+  padding-top: 2px;
+}
+
+.account-value {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--fg);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.token-text {
+  font-family: ui-monospace, monospace;
+  font-size: 11.5px;
+  word-break: break-all;
+}
+
+.link-btn {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-size: 11.5px;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+.perm-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.perm {
+  font-size: 11.5px;
+}
+
+.perm.ok {
+  color: #3fb950;
+}
+
+.perm.no {
+  color: #f85149;
+}
+
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.link-out {
+  text-decoration: none;
+  display: inline-block;
+  line-height: 1.4;
+}
+
+.danger-text {
+  color: #f85149 !important;
+  border-color: #f8514966 !important;
+}
+
+.danger-text:hover {
+  background: #f8514915 !important;
+}
+
+.confirm-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: #f85149;
+}
+
+.guide-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.guide-card {
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.guide-card:hover {
+  border-color: var(--accent);
+}
+
+.guide-card.recommended {
+  border-color: #2f81f766;
+}
+
+.guide-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.guide-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.guide-badge {
+  background: #2f81f722;
+  color: #58a6ff;
+  font-size: 10.5px;
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+
+.guide-card p {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.guide-skip,
+.guide-back {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 12.5px;
+  cursor: pointer;
+  padding: 2px 0;
+  font-family: inherit;
+}
+
+.guide-skip:hover,
+.guide-back:hover {
+  color: var(--accent);
+}
+
+.guide-foot-help {
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.guide-foot-help a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.guide-foot-help a:hover {
+  text-decoration: underline;
+}
+
+/* 步骤列表 */
+.guide-steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.guide-steps > li {
+  counter-increment: step;
+  display: flex;
+  gap: 10px;
+}
+
+.guide-steps > li::before {
+  content: counter(step);
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guide-step-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.guide-step-body strong {
+  display: block;
+  font-size: 13.5px;
+  color: var(--fg);
+  margin-bottom: 4px;
+}
+
+.guide-step-body p {
+  margin: 0 0 6px;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.guide-step-body p:last-child {
+  margin-bottom: 0;
+}
+
+.guide-link-btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+}
+
+.guide-link-btn:hover {
+  filter: brightness(1.1);
+}
+
+.guide-perms {
+  margin: 0 0 6px;
+  padding-left: 18px;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.guide-perms strong {
+  display: inline;
+  color: var(--fg);
+}
+
+.guide-note {
+  background: #e3b34115;
+  border-left: 2px solid #e3b34188;
+  padding: 6px 10px;
+  border-radius: 0 5px 5px 0;
+  font-size: 12px !important;
+  color: #b8860b !important;
+}
+
+.guide-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--fg);
+  padding: 10px;
+  font-size: 13px;
+  font-family: ui-monospace, monospace;
+  box-sizing: border-box;
+}
+
+.guide-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.guide-warn {
+  background: #e3b34115;
+  border: 1px solid #e3b34155;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: var(--fg);
+}
+
+.guide-warn ul {
+  margin: 6px 0 8px;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.guide-relink {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.welcome-card h1 {
+  font-size: 22px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.welcome-card .hint {
+  font-size: 13px;
+  margin: 0;
+}
+
+.welcome-card input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--fg);
+  padding: 10px;
+  font-size: 13px;
+  font-family: ui-monospace, monospace;
+}
+
+.welcome-card input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+button.primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 14px;
+  font-size: 14px;
+  width: 100%;
+}
+
+button.primary.big {
+  width: auto;
+  padding: 12px 28px;
+  font-size: 15px;
+}
+
+/* GitHub 默认按钮口径 */
+button.ghost {
+  background: var(--bgColor-muted);
+  border: 1px solid var(--borderColor-default);
+  color: var(--fgColor-default);
+  border-radius: var(--borderRadius-medium);
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+button.ghost:hover {
+  background: var(--bgColor-emphasis-hover);
+  border-color: var(--borderColor-emphasis);
+}
+
+.error {
+  background: #b91c1c22;
+  color: #f87171;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.error.banner {
+  margin: 12px 20px 0;
+}
+
+/* ── 顶部栏 ── */
+.shell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * 顶栏：参照 GitHub 顶栏的克制感——细边线、不投影、不用大标题。
+ * 之前 padding 10/20 + 15px 粗体标题，在 1440 宽的整页里显得空且重。
+ */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 48px;
+  border-bottom: 1px solid var(--borderColor-default);
+  background: var(--bgColor-default);
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  color: #d4a72c;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.brand-name {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+/* 中文名：比英文名弱一档，作为副标而不是并列 */
+.brand-cn {
+  color: var(--fgColor-muted);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.user {
+  color: var(--fgColor-muted);
+  font-size: 12px;
+  padding-left: 8px;
+  border-left: 1px solid var(--borderColor-muted);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-bar {
+  padding: 10px 20px;
+  color: var(--accent);
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── 双栏内容区 ── */
+.content {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* 左侧主题地图 */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/*
+ * 维度切换：从 5 个横排 tab 改为纵向列表。
+ *
+ * 原因：240px 宽的侧栏里横排 5 个 tab，每个只有 44px，
+ * 中文两个字（"我的标签"四个字）根本放不下，只能缩小字号硬塞——
+ * 这直接违背「隐形融合 GitHub」：GitHub 的侧栏导航从来是纵向的。
+ * 纵向还能放下图标，扫视速度更快。
+ */
+.dim-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px;
+  border-bottom: 1px solid var(--borderColor-default);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: transparent;
+  color: var(--fgColor-default);
+  border: none;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-family: var(--fontStack-system);
+  border-radius: var(--borderRadius-medium);
+  text-align: left;
+  line-height: 1.5;
+}
+
+.tab:hover {
+  background: var(--bgColor-muted);
+}
+
+/* 选中态用 GitHub 侧栏的写法：淡底 + 加粗，不用实心蓝块 */
+.tab.active {
+  background: var(--bgColor-muted);
+  color: var(--fgColor-default);
+  font-weight: 600;
+}
+
+.tab-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  opacity: 0.65;
+}
+
+.tab.active .tab-icon {
+  opacity: 1;
+  color: var(--fgColor-accent);
+}
+
+.cluster-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px 12px;
+}
+
+.cluster-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--fgColor-default);
+  padding: 5px 10px;
+  border-radius: var(--borderRadius-medium);
+  font-size: 12px;
+  font-family: var(--fontStack-system);
+  text-align: left;
+  line-height: 1.5;
+}
+
+.cluster-row:hover {
+  background: var(--bgColor-muted);
+}
+
+.cluster-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cluster-count {
+  color: var(--muted);
+  font-size: 12px;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+/* 右侧主区 */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--borderColor-default);
+}
+
+/* 类型下拉：和搜索框等高、同款边框 */
+.type-select {
+  flex-shrink: 0;
+  height: 34px;
+  background: var(--bgColor-muted);
+  border: 1px solid var(--borderColor-default);
+  border-radius: var(--borderRadius-medium);
+  color: var(--fgColor-default);
+  padding: 0 8px;
+  font-size: 12px;
+  font-family: var(--fontStack-system);
+  cursor: pointer;
+}
+
+.type-select:hover {
+  background: var(--bgColor-emphasis-hover);
+  border-color: var(--borderColor-emphasis);
+}
+
+.type-select:focus {
+  outline: none;
+  border-color: var(--fgColor-accent);
+  box-shadow: 0 0 0 3px var(--fgColor-accent-disabled, #0969da33);
+}
+
+.search {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--fg);
+  padding: 9px 12px;
+  font-size: 14px;
+}
+
+.search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px 0;
+}
+
+.filter-stat {
+  font-size: 12px;
+  color: var(--muted);
+  margin-right: 4px;
+}
+
+.chip {
+  background: var(--tag-bg);
+  color: #58a6ff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid transparent;
+}
+
+.chip:hover {
+  border-color: #58a6ff55;
+}
+
+.chip-dim {
+  opacity: 0.6;
+  font-size: 11px;
+}
+
+.chip-x {
+  opacity: 0.6;
+}
+
+.chip.clear {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.result-head {
+  padding: 14px 20px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.sort-control select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--fg);
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.sort-control select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+  align-content: start;
+}
+
+/*
+ * 仓库卡片。
+ *
+ * 之前的做法是「每张卡一个大圆角+同色底」，整页 24 张卡浮在同一张灰底上，
+ * 视觉上非常吵——这正是 skill 点名的「圆角卡片」slop。
+ *
+ * 改为**用分隔线组织**而不是卡片容器：卡片背景透明，只保留 hover 时的淡底，
+ * 视觉重量靠排版（名字/描述/meta 的层级）而不是容器。
+ * 这更接近 GitHub 自己的仓库列表做法。
+ */
+.repo-card {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--borderRadius-medium);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /* 让卡片能在网格里被 hover 高亮而不跳动 */
+  outline: 1px solid var(--borderColor-muted);
+  outline-offset: -1px;
+}
+
+.repo-card:hover {
+  background: var(--bgColor-muted);
+  outline-color: var(--borderColor-default);
+}
+
+.repo-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.repo-name {
+  color: var(--fgColor-accent);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.005em;
+}
+
+.repo-name:hover {
+  text-decoration: underline;
+}
+
+/* 徽章用 GitHub Label 形态：描边 + 淡底，不用实心色块 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  font-size: 10.5px;
+  padding: 0 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  line-height: 1;
+  border: 1px solid;
+}
+
+.badge.archived {
+  color: var(--fgColor-attention);
+  border-color: currentColor;
+  background: transparent;
+  opacity: 0.85;
+}
+
+.repo-desc {
+  color: var(--fgColor-muted);
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.repo-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--fgColor-muted);
+}
+
+.meta-btn {
+  background: transparent;
+  border: none;
+  color: var(--fgColor-muted);
+  font-size: 11px;
+  padding: 0;
+  font-family: var(--fontStack-system);
+  cursor: pointer;
+}
+
+.meta-btn:hover {
+  color: var(--fgColor-accent);
+  text-decoration: underline;
+}
+
+.meta-btn.lang::before {
+  content: '●';
+  margin-right: 4px;
+  color: #f1e05a;
+}
+
+.stars {
+  color: var(--fgColor-muted);
+  font-size: 11px;
+}
+
+.repo-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ── 注解层：备注 / 我的标签 ── */
+/* 备注：普通文本 + 极细色条，跟星标页注入的样式保持一致 */
+.my-note {
+  color: var(--fgColor-muted);
+  border-left: 2px solid #d4a72c88;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 1px 0 1px 8px;
+  white-space: pre-wrap;
+}
+
+.note-icon {
+  margin-right: 4px;
+  opacity: 0.6;
+}
+
+.my-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* 与星标页注入的 .bs-anno-tag 保持同款：GitHub Label 形态 + 金色前缀点 */
+.my-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bgColor-default);
+  border: 1px solid var(--borderColor-default);
+  color: var(--fgColor-default);
+  font-size: 11px;
+  padding: 0 8px;
+  height: 20px;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.my-tag::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #d4a72c;
+  flex-shrink: 0;
+}
+
+.tag-x {
+  background: transparent;
+  border: none;
+  color: #e3b341;
+  opacity: 0.7;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.tag-x:hover {
+  opacity: 1;
+}
+
+.edit-trigger {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.edit-trigger:hover {
+  color: #e3b341;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  border-top: 1px solid var(--border);
+  padding-top: 9px;
+}
+
+.note-input,
+.tag-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--fg);
+  padding: 7px 9px;
+  font-size: 12.5px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.note-input:focus,
+.tag-input:focus {
+  outline: none;
+  border-color: #e3b34188;
+}
+
+.tag-add-row {
+  display: flex;
+  gap: 6px;
+}
+
+.tag-add-row .tag-input {
+  flex: 1;
+}
+
+button.primary.small,
+button.ghost.small {
+  width: auto;
+  padding: 5px 14px;
+  font-size: 12px;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ── 同步面板 ── */
+.sync-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000000aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.sync-panel {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sync-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sync-head h2 {
+  font-size: 15px;
+  color: var(--fg);
+}
+
+.sync-close {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.sync-close:hover {
+  color: var(--fg);
+}
+
+.sync-stat {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.sync-ok {
+  color: #3fb950;
+  font-size: 12px;
+}
+
+.sync-fail {
+  color: #f85149;
+  font-size: 12px;
+}
+
+.sync-err-detail {
+  background: #b91c1c15;
+  border: 1px solid #b91c1c44;
+  color: #f87171;
+  font-size: 11.5px;
+  padding: 7px 9px;
+  border-radius: 6px;
+  word-break: break-word;
+}
+
+.sync-msg {
+  background: #1f6feb22;
+  color: #58a6ff;
+  padding: 9px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.sync-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+button.ghost.wide {
+  width: 100%;
+  padding: 9px;
+  font-size: 14px;
+}
+
+.hint.tiny {
+  font-size: 11.5px;
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* ── 设置面板 ── */
+/*
+ * 设置面板：从 480px 单列改为 820px 双列。
+ *
+ * 之前的问题不是"宽度不够"这么简单——单列纵向堆 5 个区块，
+ * 用户要滚动才能看完，而且每个区块内部又很多留白，显得零碎。
+ * 双列后：一眼扫完，高度减半。
+ */
+.settings-panel {
+  max-width: 820px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+/*
+ * 用 CSS 多列布局而不是 grid。
+ *
+ * 为什么：grid 两列是「人为分栏」，哪边内容多哪边就长出空白——
+ * 试了两版分组，高度差都在 100-140px，怎么分都不平衡。
+ * 多列布局（column-count）会自动把内容按高度均匀填进两列，
+ * 不管有几块、每块多高，两列高度天然接近。
+ *
+ * 代价：跨列的元素（比如某个区块被拆到两列）不能有，
+ * 所以每个 .settings-section 都加 break-inside: avoid。
+ */
+.settings-grid {
+  column-count: 2;
+  column-gap: 28px;
+}
+
+.settings-col {
+  display: contents;
+}
+
+.settings-section {
+  break-inside: avoid;
+  margin-bottom: 18px;
+}
+
+/* 每列最后一个区块不留底部空白 */
+.settings-section:last-child {
+  margin-bottom: 0;
+}
+
+/* 窄屏（小窗口）退回单列 */
+@media (max-width: 760px) {
+  .settings-grid {
+    column-count: 1;
+  }
+}
+
+/*
+ * 双列布局下区块之间靠 .settings-col 的 gap 分隔，
+ * 不再需要 padding-top + border-top 的分隔线（那在单列时用来划分大段）。
+ * 保留 border-top 但去掉 padding，让间距由 gap 统一控制。
+ */
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.settings-section h3 {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--fgColor-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.settings-section .hint.tiny {
+  margin: 0;
+}
+
+/*
+ * 主题选择：双列布局里每边只有约 380px，
+ * 三个选项横排每个只有 120px，「随电脑的亮暗自动切换」这种说明放不下会换行很难看。
+ * 改为纵向单列，每行一个选项，说明文字有充足空间。
+ */
+.theme-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.theme-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bgColor-default);
+  border: 1px solid var(--borderColor-default);
+  border-radius: var(--borderRadius-medium);
+  padding: 8px 11px;
+  cursor: pointer;
+  font-family: var(--fontStack-system);
+  text-align: left;
+}
+
+.theme-opt:hover {
+  border-color: var(--borderColor-emphasis);
+}
+
+.theme-opt.active {
+  border-color: var(--fgColor-accent);
+  /* 用内阴影做「选中」而不是整块填充，和 GitHub 的选中态一致 */
+  box-shadow: inset 0 0 0 1px var(--fgColor-accent);
+  background: var(--bgColor-muted);
+}
+
+.theme-opt-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fgColor-default);
+  flex-shrink: 0;
+  min-width: 62px;
+}
+
+.theme-opt.active .theme-opt-label {
+  color: var(--fgColor-accent);
+}
+
+.theme-opt-desc {
+  font-size: 11px;
+  color: var(--fgColor-muted);
+  line-height: 1.4;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 11px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.setting-row:hover {
+  border-color: #58a6ff55;
+}
+
+.setting-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.setting-label {
+  font-size: 13px;
+  color: var(--fg);
+}
+
+.setting-desc {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* 开关：用 checkbox 换皮，不引额外依赖 */
+input.switch {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 38px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--border);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin: 0;
+}
+
+input.switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s;
+}
+
+input.switch:checked {
+  background: var(--accent);
+}
+
+input.switch:checked::after {
+  transform: translateX(16px);
+}
+
+/* ── 反馈与支持 ── */
+.feedback-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--bgColor-muted);
+  border: 1px solid var(--borderColor-default);
+  border-radius: var(--borderRadius-medium);
+  padding: 8px 12px;
+}
+
+.feedback-email {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.feedback-email:hover {
+  text-decoration: underline;
+}
+
+.feedback-copy {
+  font-size: 11.5px;
+  flex-shrink: 0;
+}
+
+/* ── 清理面板 ── */
+.cleanup-panel {
+  max-width: 640px;
+  max-height: 85vh;
+}
+
+.badge-dot {
+  display: inline-block;
+  margin-left: 5px;
+  background: #db6d28;
+  color: #fff;
+  font-size: 10px;
+  padding: 0 5px;
+  border-radius: 999px;
+  line-height: 15px;
+}
+
+.cleanup-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+/* ── 分组 ── */
+.cleanup-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.cleanup-group {
+  border: 1px solid var(--borderColor-default);
+  border-radius: var(--borderRadius-medium);
+  overflow: hidden;
+}
+
+.cleanup-group-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bgColor-muted);
+  cursor: pointer;
+}
+
+.cleanup-group-head:hover {
+  background: var(--bgColor-emphasis-hover);
+}
+
+.cleanup-group-head input[type='checkbox'] {
+  flex-shrink: 0;
+  accent-color: var(--fgColor-danger);
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+}
+
+.cleanup-group-title {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.cleanup-group-name {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fgColor-default);
+}
+
+.cleanup-group-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 17px;
+  padding: 0 6px;
+  background: var(--bgColor-default);
+  border: 1px solid var(--borderColor-default);
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--fgColor-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cleanup-group-desc {
+  font-size: 11.5px;
+  color: var(--fgColor-muted);
+  line-height: 1.4;
+}
+
+.cleanup-tone {
+  flex-shrink: 0;
+  font-size: 10.5px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.cleanup-tone.safe {
+  color: var(--fgColor-success);
+  border-color: currentColor;
+}
+
+.cleanup-tone.caution {
+  color: var(--fgColor-attention);
+  border-color: currentColor;
+}
+
+/* 组内明细：默认折叠 */
+.cleanup-group-body > summary {
+  padding: 7px 12px;
+  font-size: 11.5px;
+  color: var(--fgColor-accent);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.cleanup-group-body > summary::-webkit-details-marker {
+  display: none;
+}
+
+.cleanup-group-body > summary::before {
+  content: '▸ ';
+  display: inline-block;
+  transition: transform 0.12s;
+}
+
+.cleanup-group-body[open] > summary::before {
+  content: '▾ ';
+}
+
+.cleanup-group-body > summary:hover {
+  background: var(--bgColor-muted);
+}
+
+.cleanup-group-body .cleanup-list {
+  border-top: 1px solid var(--borderColor-muted);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+/* 底部操作条 */
+.cleanup-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cleanup-selected {
+  font-size: 12.5px;
+  color: var(--fgColor-muted);
+}
+
+.cleanup-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 45vh;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.cleanup-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.cleanup-row:last-child {
+  border-bottom: none;
+}
+
+.cleanup-row:hover {
+  background: var(--surface-2);
+}
+
+.cleanup-row input[type='checkbox'] {
+  margin-top: 3px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.cleanup-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cleanup-info a {
+  color: #58a6ff;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.cleanup-info a:hover {
+  text-decoration: underline;
+}
+
+.cleanup-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.reason-badge {
+  background: #db6d2822;
+  color: #db6d28;
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+
+.cleanup-explain {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+button.primary.danger {
+  background: var(--fgColor-danger);
+  flex-shrink: 0;
+  min-width: 150px;
+  /* 危险操作按钮不该是满宽——满宽在大弹窗里视觉上太有压迫感 */
+  width: auto;
+}
+
+button.primary.danger:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.topic-tag {
+  background: var(--tag-bg);
+  border: none;
+  color: #58a6ff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.topic-tag:hover {
+  background: #1f6feb44;
+}

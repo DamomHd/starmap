@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!--
+    Starmap 图标：星座连线图
+    - 深夜蓝圆角底 + 金色连线 + 白色星点
+    - 4 颗主星连成折线，形成"图"的感觉而非随机散点
+    - 16px 下主星仍有 ~3px，连线可见，不会糊成一团
+  -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a2744"/>
+      <stop offset="100%" stop-color="#0b1220"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f5c84c" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#f5c84c" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 底：圆角方形（Chrome 工具栏图标不用自己画圆角，但商店列表里需要） -->
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+
+  <!-- 淡星云光晕，让画面不空 -->
+  <circle cx="64" cy="60" r="46" fill="url(#glow)"/>
+
+  <!-- 星座连线：4 颗主星形成折线，不是均匀分布 -->
+  <polyline
+    points="30,84 52,50 78,68 100,34"
+    fill="none"
+    stroke="#f5c84c"
+    stroke-width="3.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.85"
+  />
+
+  <!--
+    星点：主星用金色实心（与小尺寸图标的四角星同色，保持品牌一致），
+    其余用白色。之前主星是「白圆+金描边」，在深底上看着像个空心黑洞，
+    改成实心金色后既是视觉锚点，也跟 16px 的四角星呼应。
+  -->
+  <g>
+    <circle cx="52" cy="50" r="9" fill="#f5c84c"/>
+    <circle cx="30" cy="84" r="6" fill="#ffffff"/>
+    <circle cx="78" cy="68" r="6.5" fill="#ffffff"/>
+    <circle cx="100" cy="34" r="5.5" fill="#ffffff"/>
+  </g>
+
+  <!-- 零散小星点：暗示"满天星"，但足够小，16px 下自然消失不影响识别 -->
+  <g fill="#8fa8d4" opacity="0.55">
+    <circle cx="88" cy="92" r="2.2"/>
+    <circle cx="40" cy="24" r="1.8"/>
+    <circle cx="106" cy="78" r="1.6"/>
+    <circle cx="22" cy="52" r="1.6"/>
+  </g>
+</svg>

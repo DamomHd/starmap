@@ -1,0 +1,151 @@
+/**
+ * 注解编辑器样式 —— 两处共用（工作台 + GitHub 星标页注入）。
+ *
+ * 全部使用 GitHub Primer token（--fgColor-* / --bgColor-* / --borderColor-*），
+ * 第二参数是兜底值：
+ * - 在星标页：token 由 GitHub 提供，明暗主题自动跟随
+ * - 在工作台：工作台自己也定义了一套同名 token（见 app/style.css），所以同样生效
+ *
+ * 这套 token 命名是刻意的——**让工作台和 GitHub 说同一种设计语言**，
+ * 而不是工作台用一套自定义色、注入页用另一套，两边长得不一样。
+ */
+
+.bs-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 10px;
+  background: var(--bgColor-muted, #f6f8fa);
+  border: 1px solid var(--borderColor-default, #d1d9e0);
+  border-radius: var(--borderRadius-medium, 6px);
+  font-family: var(--fontStack-system);
+}
+
+.bs-note-input,
+.bs-tag-input {
+  width: 100%;
+  background: var(--bgColor-default, #fff);
+  border: 1px solid var(--borderColor-default, #d1d9e0);
+  border-radius: var(--borderRadius-medium, 6px);
+  color: var(--fgColor-default, #1f2328);
+  padding: 5px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.bs-note-input::placeholder,
+.bs-tag-input::placeholder {
+  color: var(--fgColor-muted, #59636e);
+}
+
+.bs-note-input:focus,
+.bs-tag-input:focus {
+  outline: none;
+  border-color: var(--fgColor-accent, #0969da);
+  box-shadow: 0 0 0 3px var(--fgColor-accent-disabled, #0969da33);
+}
+
+/* ── 标签区 ── */
+.bs-my-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.bs-my-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bgColor-default, #fff);
+  border: 1px solid var(--borderColor-default, #d1d9e0);
+  color: var(--fgColor-default, #1f2328);
+  font-size: 11px;
+  padding: 0 8px;
+  height: 20px;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.bs-my-tag::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #d4a72c;
+  flex-shrink: 0;
+}
+
+.bs-tag-x {
+  background: transparent;
+  border: none;
+  color: var(--fgColor-muted, #59636e);
+  opacity: 0.7;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.bs-tag-x:hover {
+  opacity: 1;
+  color: var(--fgColor-danger, #d1242f);
+}
+
+.bs-tag-add-row {
+  display: flex;
+  gap: 6px;
+}
+
+.bs-tag-add-row .bs-tag-input {
+  flex: 1;
+}
+
+/* ── 按钮 ── */
+.bs-editor-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.bs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  border-radius: var(--borderRadius-medium, 6px);
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  line-height: 1;
+}
+
+/* 主操作：GitHub 的边框式主按钮（gh-btn-primary 的强调色） */
+.bs-btn-primary {
+  background: var(--button-primary-bgColor-rest, #1f883d);
+  color: #fff;
+  border: none;
+}
+
+.bs-btn-primary:hover {
+  background: var(--button-primary-bgColor-hover, #1c8139);
+}
+
+/* 次操作：GitHub 默认按钮 */
+.bs-btn-ghost {
+  background: var(--bgColor-muted, #f6f8fa);
+  border-color: var(--borderColor-default, #d1d9e0);
+  color: var(--fgColor-default, #1f2328);
+}
+
+.bs-btn-ghost:hover {
+  background: var(--bgColor-emphasis-hover, #eff2f5);
+  border-color: var(--borderColor-emphasis, #818b98);
+}

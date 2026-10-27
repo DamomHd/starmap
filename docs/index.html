@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Starmap 星图 — 隐私政策</title>
+<meta name="description" content="Starmap（星图）Chrome 扩展的隐私政策：没有服务器，数据只存在你的浏览器和你的 GitHub 账号里。">
+<style>
+  /* 刻意不引入任何外部字体/CDN —— 这是隐私政策页，自己得先做到不追踪 */
+  :root {
+    --bg: #ffffff;
+    --fg: #1f2328;
+    --muted: #59636e;
+    --border: #d1d9e0;
+    --accent: #0969da;
+    --code-bg: #f6f8fa;
+    --ok: #1a7f37;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117;
+      --fg: #f0f6fc;
+      --muted: #9198a1;
+      --border: #3d444d;
+      --accent: #4493f8;
+      --code-bg: #151b23;
+      --ok: #3fb950;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .brand-star { color: #d4a72c; font-size: 20px; }
+  .brand-name { font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
+  .brand-cn { color: var(--muted); font-size: 13px; letter-spacing: 0.08em; }
+
+  h1 { font-size: 28px; margin: 20px 0 6px; letter-spacing: -0.02em; }
+  h2 {
+    font-size: 19px; margin: 40px 0 12px; padding-top: 20px;
+    border-top: 1px solid var(--border); letter-spacing: -0.01em;
+  }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  h3 { font-size: 15px; margin: 24px 0 8px; color: var(--fg); }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    background: var(--code-bg); padding: 1px 5px; border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em;
+  }
+  .updated { color: var(--muted); font-size: 13px; margin: 0 0 24px; }
+
+  /* 核心承诺：整页最该被看见的东西 */
+  .pledge {
+    border: 1px solid var(--ok);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 24px 0;
+    background: color-mix(in srgb, var(--ok) 5%, transparent);
+  }
+  .pledge-title {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; color: var(--ok); margin-bottom: 6px;
+  }
+  .pledge p { margin: 0; font-size: 14px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border: 1px solid var(--border); }
+  th { background: var(--code-bg); font-weight: 600; }
+  td code { font-size: 0.86em; }
+
+  .ok { color: var(--ok); font-weight: 600; }
+  .no { color: #d1242f; font-weight: 600; }
+  @media (prefers-color-scheme: dark) { .no { color: #f85149; } }
+
+  footer {
+    margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <span class="brand-star">★</span>
+    <span class="brand-name">Starmap</span>
+    <span class="brand-cn">星图</span>
+  </div>
+
+  <h1>隐私政策</h1>
+  <p class="updated">最后更新：2026-10-27</p>
+
+  <div class="pledge">
+    <div class="pledge-title">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm3.78 5.28a.75.75 0 0 0-1.06-1.06L7.25 7.69 5.28 5.72a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.06 0Z"/>
+      </svg>
+      没有服务器。你的数据只存在你自己的浏览器和你的 GitHub 账号里。
+    </div>
+    <p>本扩展不收集、不上传、不共享任何东西。</p>
+  </div>
+
+  <p>Starmap（星图）是一个管理 GitHub 星标的浏览器扩展。本文说明本扩展处理哪些数据、如何使用、以及是否存在共享。</p>
+
+  <h2>1. 处理哪些信息</h2>
+  <p>所有信息都<strong>只在你的设备本地</strong>处理。</p>
+
+  <h3>1.1 你主动提供的</h3>
+  <table>
+    <thead><tr><th>数据</th><th>用途</th><th>存储位置</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>GitHub 个人访问令牌（PAT）</td>
+        <td>调用 GitHub API 读取你的星标、写入 Gist</td>
+        <td>你的浏览器本地（<code>chrome.storage.local</code>）</td>
+      </tr>
+      <tr>
+        <td>你写的备注、标签</td>
+        <td>帮你记住"为什么 star 它"</td>
+        <td>浏览器本地；开启同步时，另存于<strong>你自己账号下</strong>的 Secret Gist</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.2 从 GitHub 获取的公开信息</h3>
+  <table>
+    <thead><tr><th>数据</th><th>来源</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>你的星标仓库列表（名称、描述、语言、topic、star 数等）</td><td>GitHub API</td><td>展示与分类</td></tr>
+      <tr><td>你的 GitHub 用户名</td><td>GitHub API</td><td>显示当前登录账号</td></tr>
+    </tbody>
+  </table>
+  <p>这些数据缓存在浏览器本地，30 分钟后自动失效，<strong>不会发送到任何第三方</strong>。</p>
+
+  <h3>1.3 我们不收集的</h3>
+  <ul>
+    <li><span class="no">✕</span> 浏览历史</li>
+    <li><span class="no">✕</span> 你在 GitHub 之外的任何网页内容</li>
+    <li><span class="no">✕</span> 设备信息、IP 地址、地理位置</li>
+    <li><span class="no">✕</span> 使用统计、点击行为、崩溃报告</li>
+    <li><span class="no">✕</span> Cookie，也不接入任何分析或广告 SDK</li>
+  </ul>
+
+  <h2>2. 如何使用这些信息</h2>
+  <p>所有数据仅用于本扩展的核心功能：</p>
+  <ul>
+    <li><strong>读取星标</strong> → 展示、分类、搜索你的星标仓库</li>
+    <li><strong>读取用户名</strong> → 在界面上显示当前登录账号</li>
+    <li><strong>备注与标签</strong> → 保存你对仓库的私人记录，用于检索和显示</li>
+    <li><strong>PAT</strong> → 作为身份凭证，代表你调用 GitHub 官方 API</li>
+  </ul>
+  <p><strong>不存在其他用途。不用于画像、广告、训练模型或任何形式的二次利用。</strong></p>
+
+  <h2>3. 是否与第三方共享</h2>
+  <p><strong>不共享。</strong>本扩展的所有网络请求只发往以下两个域名：</p>
+  <table>
+    <thead><tr><th>域名</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td><code>api.github.com</code></td><td>读取星标、取消 star</td></tr>
+      <tr><td><code>github.com</code></td><td>访问你自己的 Gist（跨设备同步时）</td></tr>
+    </tbody>
+  </table>
+  <p>除此之外没有任何后端、代理、CDN 或统计服务。</p>
+
+  <h3>关于跨设备同步（可选功能）</h3>
+  <p>若你开启"自动同步"，你的备注和标签会写入<strong>你自己 GitHub 账号下的一个 Secret Gist</strong>。</p>
+  <ul>
+    <li>该 Gist 由你自己拥有和控制</li>
+    <li>只有持有链接的人能访问（GitHub 的 Secret Gist 机制）</li>
+    <li>你可以随时在 GitHub 上删除它</li>
+    <li><strong>不开启同步时，数据完全不离开你的浏览器</strong></li>
+  </ul>
+
+  <h3>关于 GitHub 自身</h3>
+  <p>你的请求经过 GitHub 的服务器——这和使用 GitHub 网站本身没有区别。GitHub 如何处理数据见
+    <a href="https://docs.github.com/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub 隐私声明</a>。</p>
+
+  <h2>4. 数据存储与保留</h2>
+  <table>
+    <tbody>
+      <tr><th>位置</th><td><code>chrome.storage.local</code>（浏览器本地存储），只有本扩展可访问</td></tr>
+      <tr><th>保留时间</th><td>直到你删除，或卸载扩展</td></tr>
+      <tr><th>缓存</th><td>星标数据缓存 30 分钟后自动失效</td></tr>
+    </tbody>
+  </table>
+
+  <h3>你的控制权</h3>
+  <table>
+    <thead><tr><th>你想做什么</th><th>怎么做</th></tr></thead>
+    <tbody>
+      <tr><td>删除某条备注/标签</td><td>在界面上清空该仓库的备注和标签</td></tr>
+      <tr><td>删除所有本地数据</td><td>卸载扩展，或在设置里移除 Token</td></tr>
+      <tr><td>撤销本扩展的访问权限</td><td>GitHub → Settings → Applications → 撤销该 Token</td></tr>
+      <tr><td>删除云端同步数据</td><td>到 GitHub 删除对应的 Secret Gist</td></tr>
+    </tbody>
+  </table>
+  <p><strong>撤销 Token 后，本扩展立刻失去所有能力。</strong></p>
+
+  <h2>5. 关于代码可见性</h2>
+  <p>浏览器扩展的代码是<strong>可以被查看的</strong>——任何人下载扩展后都能解压看到源码。这是 Chrome 平台的特性，所有扩展都如此。</p>
+  <p>因此本扩展在设计上<strong>不依赖代码保密来保护你的数据</strong>：</p>
+  <ul>
+    <li>没有任何硬编码的密钥或凭证</li>
+    <li>你的 Token 只存在你自己的浏览器里</li>
+    <li>没有服务器，所以不存在"服务器数据泄露"</li>
+    <li>即使源码完全公开，攻击者也拿不到其他用户的数据</li>
+  </ul>
+
+  <h2>6. 儿童隐私</h2>
+  <p>本扩展不面向 13 岁以下儿童，也不会有意收集儿童信息。</p>
+
+  <h2>7. 政策变更</h2>
+  <p>若本政策发生实质变更，会在扩展的更新说明中告知。</p>
+  <div class="pledge">
+    <div class="pledge-title">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm3.78 5.28a.75.75 0 0 0-1.06-1.06L7.25 7.69 5.28 5.72a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.06 0Z"/>
+      </svg>
+      对未来的承诺
+    </div>
+    <p>如果未来本扩展引入任何服务器或第三方服务，会在此文档中明确说明，并在扩展界面同步更新——不会偷偷改变。</p>
+  </div>
+
+  <h2>8. 联系的渠道</h2>
+  <p>如对隐私处理有疑问、发现安全问题或有软件开发反馈，请通过项目仓库的 Issues 反馈，或直接发送邮件至 <a href="mailto:sneaker@agent.qq.com">sneaker@agent.qq.com</a>。</p>
+
+  <h2>附：权限说明</h2>
+  <table>
+    <thead><tr><th>权限</th><th>为什么需要</th></tr></thead>
+    <tbody>
+      <tr><td><code>storage</code></td><td>在本地保存 Token、备注、标签和缓存</td></tr>
+      <tr><td><code>api.github.com</code></td><td>读取你的星标、取消 star</td></tr>
+      <tr><td><code>github.com</code></td><td>在星标页显示工具条；同步时访问 Gist</td></tr>
+    </tbody>
+  </table>
+  <p>本扩展<strong>未申请</strong>以下权限：<code>tabs</code>（读取浏览历史）、<code>history</code>、<code>cookies</code>、<code>webRequest</code>、任何 <code>&lt;all_urls&gt;</code> 全站权限。</p>
+
+  <footer>
+    Starmap 星图 · <a href="https://github.com/DamomHd/starmap" target="_blank" rel="noopener noreferrer">项目仓库与说明</a>
+  </footer>
+
+</div>
+</body>
+</html>
