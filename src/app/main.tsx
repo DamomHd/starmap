@@ -3,10 +3,10 @@ import { render } from 'preact'
 import { useState, useEffect, useMemo } from 'preact/hooks'
 import { loadToken, logout, forgetToken } from '../lib/oauth'
 import { fetchAllStarred, readCache, writeCache, currentUser, unstarRepo, type Repo } from '../lib/github'
-import { clusterBy, crossFilter, DIMENSION_LABELS, type Dimension } from '../lib/cluster'
+import { clusterBy, crossFilter, getDimensionLabels, type Dimension } from '../lib/cluster'
 import { buildIndex, searchRepos } from '../lib/search'
-import { sortRepos, SORT_LABELS, type SortKey } from '../lib/sort'
-import { filterByType, countByType, REPO_TYPE_OPTIONS, type RepoType } from '../lib/repo-type'
+import { sortRepos, getSortLabels, type SortKey } from '../lib/sort'
+import { filterByType, countByType, getRepoTypeOptions, type RepoType } from '../lib/repo-type'
 import {
   getAllAnnotations,
   patchAnnotation,
@@ -27,6 +27,7 @@ import { pullIfStale } from '../lib/auto-sync'
 import { notifyChanged } from '../lib/notify-change'
 import { CleanupPanel } from './components/CleanupPanel'
 import { suggestCleanup } from '../lib/cleanup'
+import { t, resolveLocale, setLocale } from '../lib/i18n'
 import type { Annotation } from '../lib/github'
 
 type Condition = { dim: Dimension; value: string }
@@ -74,10 +75,10 @@ function App() {
     migrateLegacyFavorites()
       .catch((e) => console.warn('收藏数据迁移失败（不影响使用）', e))
       .finally(() => getAllAnnotations().then(setAnnotations))
-    // 先应用主题，避免页面先闪一下默认色再切换
     getSettings().then((s) => {
       setSettings(s)
       applyTheme(s.theme)
+      setLocale(resolveLocale(s.language))
     })
 
     // 打开工作台时自动拉取一次并合并（节流：1 分钟内不重复拉）
@@ -157,8 +158,9 @@ function App() {
   async function handleToggleSetting(patch: Partial<Settings>) {
     // 乐观更新，避免开关有延迟感
     setSettings((prev) => ({ ...prev, ...patch }))
-    // 主题要立即生效，不等 storage 写完
+    // 主题和语言要立即生效，不等 storage 写完
     if (patch.theme) applyTheme(patch.theme)
+    if (patch.language) setLocale(resolveLocale(patch.language))
     await updateSettings(patch)
   }
 
@@ -209,6 +211,10 @@ function App() {
   // 各类型的数量（基于未按类型过滤的全集算，这样下拉里能看到每类有多少）
   const typeCounts = useMemo(() => countByType(repos), [repos])
 
+  const dimensionLabels = useMemo(() => getDimensionLabels(), [settings.language])
+  const sortLabels = useMemo(() => getSortLabels(), [settings.language])
+  const repoTypeOptions = useMemo(() => getRepoTypeOptions(), [settings.language])
+
   const clusters = useMemo(() => {
     const usedDims = new Set(conditions.map((c) => c.dim))
     const clusterDim = usedDims.has(dim) ? undefined : dim
@@ -258,9 +264,9 @@ function App() {
             <span class="logo big">★</span>
             <div>
               <h1>
-                Starmap <span class="brand-cn">星图</span>
+                Starmap {t('topbar.subtitle') && <span class="brand-cn">{t('topbar.subtitle')}</span>}
               </h1>
-              <p class="subtitle">把你的 GitHub 星标变成一张能记住你为什么 star 的地图。</p>
+              <p class="subtitle">{t('login.tagline')}</p>
             </div>
           </div>
           <LoginGuide onConnected={handleConnected} />
@@ -277,27 +283,27 @@ function App() {
         <div class="brand">
           <span class="logo">★</span>
           <span class="brand-name">Starmap</span>
-          <span class="brand-cn">星图</span>
+          {t('topbar.subtitle') && <span class="brand-cn">{t('topbar.subtitle')}</span>}
           {login && <span class="user">@{login}</span>}
         </div>
         <div class="topbar-actions">
           {repos.length > 0 && (
             <>
-              <span class="stat">{repos.length} 个星标</span>
+              <span class="stat">{t('topbar.starCount', { count: repos.length })}</span>
               <button class="ghost" onClick={() => handleLoad(true)} disabled={loading}>
-                刷新
+                {t('common.refresh')}
               </button>
             </>
           )}
           <button class="ghost" onClick={() => setSettingsOpen(true)}>
-            设置
+            {t('common.settings')}
           </button>
           <button class="ghost" onClick={() => setCleanupOpen(true)}>
-            清理
+            {t('common.cleanup')}
             {cleanupSuggestions.length > 0 && <span class="badge-dot">{cleanupSuggestions.length}</span>}
           </button>
-          <button class="ghost" onClick={handleLogout} title="断开连接（Token 会保留，可随时重连）">
-            断开
+          <button class="ghost" onClick={handleLogout} title={t('common.disconnectHint')}>
+            {t('common.disconnect')}
           </button>
         </div>
       </header>
@@ -307,12 +313,12 @@ function App() {
       {repos.length === 0 && !loading && (
         <div class="empty">
           <button class="primary big" onClick={() => handleLoad()}>
-            拉取我的全部 Star
+            {t('topbar.emptyTitle')}
           </button>
         </div>
       )}
 
-      {loading && <div class="loading-bar">{loadingText || '加载中…'}</div>}
+      {loading && <div class="loading-bar">{loadingText || t('topbar.loadingText')}</div>}
 
       {repos.length > 0 && (
         <div class="content">
@@ -329,14 +335,14 @@ function App() {
                     class="tab-icon"
                     dangerouslySetInnerHTML={{ __html: DIMENSION_ICONS[d] }}
                   />
-                  {DIMENSION_LABELS[d]}
+                  {dimensionLabels[d]}
                 </button>
               ))}
             </div>
 
             <div class="cluster-list">
               {clusters.length === 0 && (
-                <p class="hint small">当前视角已在筛选中，切换维度或清空条件查看</p>
+                <p class="hint small">{t('results.noMatch')}</p>
               )}
               {clusters.map((c) => (
                 <button key={c.key} class="cluster-row" onClick={() => toggleCondition(dim, c.key)}>
@@ -353,21 +359,16 @@ function App() {
               <input
                 class="search"
                 type="search"
-                placeholder="搜索名字 / 描述 / topic / 我的标签 / 备注…"
+                placeholder={t('content.searchPlaceholder')}
                 value={query}
                 onInput={(e) => setQuery((e.target as HTMLInputElement).value)}
               />
-              {/*
-               * 类型筛选：对齐 GitHub 星标页原生的 Type 下拉。
-               * 放在搜索框同一行右侧——GitHub 自己也是这个布局（Search | Type | Language | Sort）。
-               */}
               <select
                 class="type-select"
                 value={repoType}
                 onChange={(e) => setRepoType((e.target as HTMLSelectElement).value as RepoType)}
-                title="按仓库类型筛选"
               >
-                {REPO_TYPE_OPTIONS.map(({ value, label }) => (
+                {repoTypeOptions.map(({ value, label }) => (
                   <option key={value} value={value}>
                     {label}（{typeCounts.get(value) ?? 0}）
                   </option>
@@ -385,9 +386,9 @@ function App() {
                     key={`${c.dim}:${c.value}`}
                     class="chip"
                     onClick={() => toggleCondition(c.dim, c.value)}
-                    title="点击移除"
+                    title={t('common.delete')}
                   >
-                    <span class="chip-dim">{DIMENSION_LABELS[c.dim]}</span>
+                    <span class="chip-dim">{dimensionLabels[c.dim]}</span>
                     {c.value}
                     <span class="chip-x">×</span>
                   </button>
@@ -396,24 +397,24 @@ function App() {
                   class="chip clear"
                   onClick={() => setConditions([])}
                 >
-                  清空
+                  {t('common.clear')}
                 </button>
               </div>
             )}
 
             <div class="result-head">
               <span>
-                仓库 <span class="muted">({visible.length})</span>
+                {t('results.repos')} <span class="muted">({visible.length})</span>
               </span>
               <label class="sort-control">
-                排序
+                {t('sort.label')}
                 <select
                   value={sortKey}
                   onChange={(e) => setSortKey((e.target as HTMLSelectElement).value as SortKey)}
                 >
-                  {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
+                  {(Object.keys(sortLabels) as SortKey[]).map((k) => (
                     <option key={k} value={k}>
-                      {SORT_LABELS[k]}
+                      {sortLabels[k]}
                     </option>
                   ))}
                 </select>
@@ -430,7 +431,7 @@ function App() {
                   onPatch={handlePatch}
                 />
               ))}
-              {visible.length === 0 && <p class="hint">没有匹配的仓库</p>}
+              {visible.length === 0 && <p class="hint">{t('results.noMatch')}</p>}
             </div>
           </main>
         </div>

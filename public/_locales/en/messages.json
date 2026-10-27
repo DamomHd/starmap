@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "Starmap — GitHub Stars Manager",
+    "description": "The name of the extension"
+  },
+  "appDesc": {
+    "message": "Turn your GitHub stars into a searchable, annotated personal repository map.",
+    "description": "The description of the extension"
+  },
+  "actionTitle": {
+    "message": "Open Starmap",
+    "description": "Tooltip for the extension icon"
+  }
+}

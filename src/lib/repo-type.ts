@@ -12,6 +12,7 @@
  */
 
 import type { Repo } from './github'
+import { t } from './i18n'
 
 export type RepoType = 'all' | 'public' | 'private' | 'source' | 'fork' | 'mirror' | 'template'
 
@@ -24,6 +25,18 @@ export const REPO_TYPE_OPTIONS: Array<{ value: RepoType; label: string }> = [
   { value: 'mirror', label: '镜像' },
   { value: 'template', label: '模板' },
 ]
+
+export function getRepoTypeOptions(): Array<{ value: RepoType; label: string }> {
+  return [
+    { value: 'all', label: t('repoType.all') },
+    { value: 'public', label: t('repoType.public') },
+    { value: 'private', label: t('repoType.private') },
+    { value: 'source', label: t('repoType.source') },
+    { value: 'fork', label: t('repoType.fork') },
+    { value: 'mirror', label: t('repoType.mirror') },
+    { value: 'template', label: t('repoType.template') },
+  ]
+}
 
 /**
  * 判断仓库是否属于某个类型。

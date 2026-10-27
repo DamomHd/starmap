@@ -6,6 +6,7 @@
  */
 
 import type { Repo } from './github'
+import { t } from './i18n'
 
 export type SortKey = 'starred' | 'stars' | 'updated' | 'name'
 
@@ -14,6 +15,15 @@ export const SORT_LABELS: Record<SortKey, string> = {
   stars: 'Star 数',
   updated: '最后更新',
   name: '名称',
+}
+
+export function getSortLabels(): Record<SortKey, string> {
+  return {
+    starred: t('sort.starred'),
+    stars: t('sort.stars'),
+    updated: t('sort.updated'),
+    name: t('sort.name'),
+  }
 }
 
 function ts(iso: string | undefined): number {

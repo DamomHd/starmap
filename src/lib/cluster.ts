@@ -9,6 +9,7 @@
  */
 
 import type { Repo, Annotation } from './github'
+import { t } from './i18n'
 
 /** 支持的聚类维度。myTag 是用户自己打的标签，跟 GitHub topic 分开。 */
 export type Dimension = 'topic' | 'language' | 'author' | 'year' | 'myTag'
@@ -19,6 +20,16 @@ export const DIMENSION_LABELS: Record<Dimension, string> = {
   author: '作者',
   year: '年份',
   myTag: '我的标签',
+}
+
+export function getDimensionLabels(): Record<Dimension, string> {
+  return {
+    topic: t('dimensions.topic'),
+    language: t('dimensions.language'),
+    author: t('dimensions.author'),
+    year: t('dimensions.year'),
+    myTag: t('dimensions.myTag'),
+  }
 }
 
 /** 一个主题簇 */

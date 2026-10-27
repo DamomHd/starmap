@@ -12,6 +12,7 @@
  */
 
 import { getSettings, type Settings } from '../lib/settings'
+import { t, resolveLocale, setLocale } from '../lib/i18n'
 
 const APP_URL = () => chrome.runtime.getURL('src/app/index.html')
 
@@ -73,21 +74,21 @@ function createBanner(): HTMLElement {
   bar.className = 'bs-banner'
   bar.innerHTML = `
     <div class="bs-filter-row">
-      <button class="bs-search-toggle" type="button" title="搜索我的备注和标签" aria-label="搜索我的备注和标签">
+      <button class="bs-search-toggle" type="button" title="${t('content.searchTitle')}" aria-label="${t('content.searchTitle')}">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
           <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z"/>
         </svg>
       </button>
-      <input class="bs-search" type="search" placeholder="搜我的备注 / 标签…" hidden />
-      <button class="bs-clear" type="button" hidden>清除</button>
+      <input class="bs-search" type="search" placeholder="${t('content.searchPlaceholder')}" hidden />
+      <button class="bs-clear" type="button" hidden>${t('content.clear')}</button>
       <span class="bs-filter-count"></span>
-      <button class="bs-tags-toggle" type="button" title="按标签筛选">
+      <button class="bs-tags-toggle" type="button" title="${t('content.tagsTitle')}">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
           <path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.752 1.752 0 0 1 1 7.775Z"/>
         </svg>
-        <span>标签</span>
+        <span>${t('content.tags')}</span>
       </button>
-      <button class="bs-open-btn" type="button" title="打开 Starmap 工作台">工作台</button>
+      <button class="bs-open-btn" type="button" title="${t('content.workbenchTitle')}">${t('content.workbench')}</button>
     </div>
     <div class="bs-tag-row" hidden></div>
   `
@@ -160,7 +161,7 @@ function createFloatingButton(): HTMLElement {
   const btn = document.createElement('button')
   btn.className = 'bs-float'
   btn.type = 'button'
-  btn.title = '打开 Starmap 工作台'
+  btn.title = t('content.workbenchTitle')
   btn.innerHTML = '<span class="bs-float-star">★</span>'
   btn.addEventListener('click', openApp)
   return btn
@@ -408,6 +409,7 @@ function injectStyles() {
 function inject(settings: Settings) {
   if (!isStarsPage()) return
 
+  setLocale(resolveLocale(settings.language))
   injectStyles()
 
   // 横条：仅在启用、锚点就绪且尚未插入时注入

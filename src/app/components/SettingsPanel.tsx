@@ -1,9 +1,10 @@
 /**
- * 设置面板 —— 隔离两个关注点：
- * 1. 星标页注入开关（让用户控制 GitHub 页面被改动的程度）
- * 2. Gist 跨设备同步
- *
- * 原本只有「同步」面板，现在合并为「设置」，避免顶栏按钮越堆越多。
+ * 设置面板 —— 隔离多个关注点：
+ * 1. 语言设置（系统 / 简体中文 / English）
+ * 2. 星标页注入开关
+ * 3. 外观设置
+ * 4. Gist 跨设备同步
+ * 5. 隐私与反馈支持
  */
 
 import { useState, useEffect } from 'preact/hooks'
@@ -11,22 +12,12 @@ import type { Annotation } from '../../lib/github'
 import type { Settings } from '../../lib/settings'
 import { pushToGist, pullFromGist } from '../../lib/gist'
 import { AccountSection } from './AccountSection'
+import { t, formatRelativeTime, type I18nKey } from '../../lib/i18n'
 
 interface SyncState {
   lastPushAt: number
   ok: boolean
   error?: string
-}
-
-/** 把时间戳格式化成「3 分钟前」这种相对时间 */
-function relativeTime(ts: number): string {
-  const diff = Date.now() - ts
-  const min = Math.floor(diff / 60000)
-  if (min < 1) return '刚刚'
-  if (min < 60) return `${min} 分钟前`
-  const h = Math.floor(min / 60)
-  if (h < 24) return `${h} 小时前`
-  return `${Math.floor(h / 24)} 天前`
 }
 
 interface Props {
@@ -42,33 +33,39 @@ interface Props {
   onClose: () => void
 }
 
-/** 主题选项。放在模块级，避免每次渲染重建数组导致子组件无谓重渲染 */
-const THEME_OPTIONS: Array<{ value: Settings['theme']; label: string; desc: string }> = [
-  { value: 'system', label: '跟随系统', desc: '随电脑的亮暗自动切换' },
-  { value: 'light', label: '亮色', desc: '始终使用亮色' },
-  { value: 'dark', label: '暗色', desc: '始终使用暗色' },
+/** 语言选项 */
+const LANG_OPTIONS: Array<{ value: Settings['language']; labelKey: I18nKey; descKey: I18nKey }> = [
+  { value: 'auto', labelKey: 'settings.langAuto', descKey: 'settings.langAutoDesc' },
+  { value: 'zh-CN', labelKey: 'settings.langZh', descKey: 'settings.langZhDesc' },
+  { value: 'en', labelKey: 'settings.langEn', descKey: 'settings.langEnDesc' },
 ]
 
-/** 只挑布尔型设置项——theme 不是开关，单独渲染 */
+/** 主题选项 */
+const THEME_OPTIONS: Array<{ value: Settings['theme']; labelKey: I18nKey; descKey: I18nKey }> = [
+  { value: 'system', labelKey: 'settings.themeSystem', descKey: 'settings.themeSystemDesc' },
+  { value: 'light', labelKey: 'settings.themeLight', descKey: 'settings.themeLightDesc' },
+  { value: 'dark', labelKey: 'settings.themeDark', descKey: 'settings.themeDarkDesc' },
+]
+
 type BooleanSettingKey = {
   [K in keyof Settings]: Settings[K] extends boolean ? K : never
 }[keyof Settings]
 
-const INJECT_ITEMS: Array<{ key: BooleanSettingKey; label: string; desc: string }> = [
+const INJECT_ITEMS: Array<{ key: BooleanSettingKey; labelKey: I18nKey; descKey: I18nKey }> = [
   {
     key: 'showBanner',
-    label: '顶部横条',
-    desc: '在星标列表上方显示一条 Starmap 提示栏',
+    labelKey: 'settings.showBanner',
+    descKey: 'settings.showBannerDesc',
   },
   {
     key: 'showFloatButton',
-    label: '悬浮按钮',
-    desc: '在页面右下角显示圆形入口按钮',
+    labelKey: 'settings.showFloatButton',
+    descKey: 'settings.showFloatButtonDesc',
   },
   {
     key: 'showAnnotations',
-    label: '仓库条目里的标签与备注',
-    desc: '把你写的标签和备注直接显示在 GitHub 星标列表的每个仓库下方',
+    labelKey: 'settings.showAnnotations',
+    descKey: 'settings.showAnnotationsDesc',
   },
 ]
 
@@ -104,13 +101,13 @@ export function SettingsPanel({
   }, [])
 
   async function handlePush() {
-    if (!confirm(`将把本地 ${count} 条注解覆盖到 Gist，远端原有内容会丢失。继续？`)) return
+    if (!confirm(t('settings.pushConfirm', { count }))) return
     setBusy('push')
     setErr('')
     setMsg('')
     try {
       const r = await pushToGist(annotations)
-      setMsg(r === 'created' ? '已创建 Gist 并推送完成' : '已推送到 Gist')
+      setMsg(r === 'created' ? t('settings.createdGistSuccess') : t('settings.pushedSuccess'))
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e))
     } finally {
@@ -119,18 +116,18 @@ export function SettingsPanel({
   }
 
   async function handlePull() {
-    if (!confirm('将从 Gist 拉取并覆盖本地注解，本地未推送的修改会丢失。继续？')) return
+    if (!confirm(t('settings.pullConfirm'))) return
     setBusy('pull')
     setErr('')
     setMsg('')
     try {
       const remote = await pullFromGist()
       if (!remote) {
-        setMsg('远端还没有数据')
+        setMsg(t('settings.noRemoteData'))
         return
       }
       await onPulled(remote)
-      setMsg(`已拉取 ${Object.keys(remote).length} 条注解`)
+      setMsg(t('settings.pulledSuccess', { count: Object.keys(remote).length }))
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e))
     } finally {
@@ -142,140 +139,141 @@ export function SettingsPanel({
     <div class="sync-overlay" onClick={onClose}>
       <div class="sync-panel settings-panel" onClick={(e) => e.stopPropagation()}>
         <div class="sync-head">
-          <h2>设置</h2>
+          <h2>{t('settings.title')}</h2>
           <button class="sync-close" onClick={onClose}>
             ×
           </button>
         </div>
 
-        {/*
-         * 双列布局：之前单列纵向堆 5 个区块，480px 宽且超出屏幕高度。
-         *
-         * 分组依据是**高度均衡**而非功能分类——第一版按「身份 / 行为」分，
-         * 结果左列只有 2 个区块、右列 3 个，左列下方空一大片，更难看。
-         *
-         * 现在：左列放「账户 + 星标页开关」（都偏"配置"），
-         * 右列放「外观 + 同步」（都偏"行为"），两边高度接近。
-         */}
         <div class="settings-grid">
           <div class="settings-col">
+            {/* 语言设置 */}
+            <section class="settings-section">
+              <h3>{t('settings.language')}</h3>
+              <p class="hint tiny">{t('settings.languageDesc')}</p>
+              <div class="theme-picker">
+                {LANG_OPTIONS.map(({ value, labelKey, descKey }) => (
+                  <button
+                    key={value}
+                    class={settings.language === value ? 'theme-opt active' : 'theme-opt'}
+                    onClick={() => onToggle({ language: value })}
+                  >
+                    <span class="theme-opt-label">{t(labelKey)}</span>
+                    <span class="theme-opt-desc">{t(descKey)}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
             {/* 账户：身份、Token、权限 */}
             <AccountSection login={login} onReconnect={onReconnect} onForget={onForget} />
 
-        {/* 星标页注入开关 */}
-        <section class="settings-section">
-          <h3>GitHub 星标页</h3>
-          <p class="hint tiny">控制 Starmap 在你 GitHub 页面上显示多少内容。改动立即生效，无需刷新。</p>
-          {INJECT_ITEMS.map(({ key, label, desc }) => (
-            <label class="setting-row" key={key}>
-              <div class="setting-text">
-                <span class="setting-label">{label}</span>
-                <span class="setting-desc">{desc}</span>
-              </div>
-              <input
-                type="checkbox"
-                class="switch"
-                checked={settings[key]}
-                onChange={(e) => onToggle({ [key]: (e.target as HTMLInputElement).checked })}
-              />
-            </label>
-          ))}
-        </section>
+            {/* 星标页注入开关 */}
+            <section class="settings-section">
+              <h3>{t('settings.starsSection')}</h3>
+              <p class="hint tiny">{t('settings.starsSectionDesc')}</p>
+              {INJECT_ITEMS.map(({ key, labelKey, descKey }) => (
+                <label class="setting-row" key={key}>
+                  <div class="setting-text">
+                    <span class="setting-label">{t(labelKey)}</span>
+                    <span class="setting-desc">{t(descKey)}</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    class="switch"
+                    checked={settings[key]}
+                    onChange={(e) => onToggle({ [key]: (e.target as HTMLInputElement).checked })}
+                  />
+                </label>
+              ))}
+            </section>
           </div>
 
           <div class="settings-col">
             {/* 外观 */}
             <section class="settings-section">
-              <h3>外观</h3>
+              <h3>{t('settings.themeSection')}</h3>
               <div class="theme-picker">
-                {THEME_OPTIONS.map(({ value, label, desc }) => (
+                {THEME_OPTIONS.map(({ value, labelKey, descKey }) => (
                   <button
                     key={value}
                     class={settings.theme === value ? 'theme-opt active' : 'theme-opt'}
                     onClick={() => onToggle({ theme: value })}
                   >
-                    <span class="theme-opt-label">{label}</span>
-                    <span class="theme-opt-desc">{desc}</span>
+                    <span class="theme-opt-label">{t(labelKey)}</span>
+                    <span class="theme-opt-desc">{t(descKey)}</span>
                   </button>
                 ))}
               </div>
-              <p class="hint tiny">只影响工作台。星标页跟随 GitHub 自己的主题。</p>
+              <p class="hint tiny">{t('settings.themeDesc')}</p>
             </section>
 
-        {/* Gist 同步 */}
-        <section class="settings-section">
-          <h3>跨设备同步</h3>
-          <p class="hint tiny">
-            标签和备注可存到你自己的 <strong>Secret Gist</strong>。需要 Token 勾选 <code>gist</code> 权限。
-          </p>
-
-          <label class="setting-row">
-            <div class="setting-text">
-              <span class="setting-label">自动同步</span>
-              <span class="setting-desc">
-                改完 5 秒后自动推送；打开时自动拉取并按修改时间合并，不会覆盖你更新的内容
-              </span>
-            </div>
-            <input
-              type="checkbox"
-              class="switch"
-              checked={settings.autoSync}
-              onChange={(e) => onToggle({ autoSync: (e.target as HTMLInputElement).checked })}
-            />
-          </label>
-
-          <p class="sync-stat">
-            本地共有 <strong>{count}</strong> 条注解
-            {syncState && (
-              <span class={syncState.ok ? 'sync-ok' : 'sync-fail'}>
-                {' · '}
-                {syncState.ok ? `上次同步 ${relativeTime(syncState.lastPushAt)}` : '上次同步失败'}
-              </span>
-            )}
-          </p>
-          {syncState && !syncState.ok && syncState.error && (
-            <div class="sync-err-detail">{syncState.error}</div>
-          )}
-
-          {err && <div class="error">{err}</div>}
-          {msg && <div class="sync-msg">{msg}</div>}
-
-          <div class="sync-actions">
-            <button class="primary" onClick={handlePush} disabled={busy !== ''}>
-              {busy === 'push' ? '推送中…' : '↑ 推送到 Gist'}
-            </button>
-            <button class="ghost wide" onClick={handlePull} disabled={busy !== ''}>
-              {busy === 'pull' ? '拉取中…' : '↓ 从 Gist 拉取'}
-            </button>
-          </div>
-          <p class="hint tiny">推送 = 本地覆盖远端；拉取 = 远端覆盖本地。</p>
-        </section>
-
-            {/* 安全说明放在最后：它是"回顾性"信息，用户日常不需要看 */}
+            {/* Gist 同步 */}
             <section class="settings-section">
-              <h3>关于隐私</h3>
-              <ul class="privacy-list compact">
-                <li>没有自建服务器 —— 所有请求直接发往 <code>api.github.com</code></li>
-                <li>Token 只存在本机浏览器，不上传</li>
-                <li>标签和备注存在本地 + 你自己的 Secret Gist</li>
-                <li>无统计、无追踪、无第三方 SDK</li>
-              </ul>
-              <p class="hint tiny">
-                完整隐私政策见扩展目录下的 <code>PRIVACY.md</code>
+              <h3>{t('settings.syncSection')}</h3>
+              <p class="hint tiny">{t('settings.syncDesc')}</p>
+
+              <label class="setting-row">
+                <div class="setting-text">
+                  <span class="setting-label">{t('settings.autoSync')}</span>
+                  <span class="setting-desc">{t('settings.autoSyncDesc')}</span>
+                </div>
+                <input
+                  type="checkbox"
+                  class="switch"
+                  checked={settings.autoSync}
+                  onChange={(e) => onToggle({ autoSync: (e.target as HTMLInputElement).checked })}
+                />
+              </label>
+
+              <p class="sync-stat">
+                {t('settings.localStat', { count })}
+                {syncState && (
+                  <span class={syncState.ok ? 'sync-ok' : 'sync-fail'}>
+                    {' · '}
+                    {syncState.ok ? t('settings.syncOk', { time: formatRelativeTime(syncState.lastPushAt) }) : t('settings.syncFail')}
+                  </span>
+                )}
               </p>
+              {syncState && !syncState.ok && syncState.error && (
+                <div class="sync-err-detail">{syncState.error}</div>
+              )}
+
+              {err && <div class="error">{err}</div>}
+              {msg && <div class="sync-msg">{msg}</div>}
+
+              <div class="sync-actions">
+                <button class="primary" onClick={handlePush} disabled={busy !== ''}>
+                  {busy === 'push' ? t('settings.pushing') : t('settings.pushBtn')}
+                </button>
+                <button class="ghost wide" onClick={handlePull} disabled={busy !== ''}>
+                  {busy === 'pull' ? t('settings.pulling') : t('settings.pullBtn')}
+                </button>
+              </div>
+              <p class="hint tiny">{t('settings.syncHint')}</p>
+            </section>
+
+            {/* 安全说明 */}
+            <section class="settings-section">
+              <h3>{t('settings.privacySection')}</h3>
+              <ul class="privacy-list compact">
+                <li>{t('settings.privacyList1')}</li>
+                <li>{t('settings.privacyList2')}</li>
+                <li>{t('settings.privacyList3')}</li>
+                <li>{t('settings.privacyList4')}</li>
+              </ul>
+              <p class="hint tiny">{t('settings.privacyDocLink')}</p>
             </section>
 
             {/* 反馈与支持 */}
             <section class="settings-section">
-              <h3>反馈与支持</h3>
-              <p class="hint tiny">
-                遇到问题、改进建议或有功能诉求，欢迎联系开发者：
-              </p>
+              <h3>{t('settings.feedbackSection')}</h3>
+              <p class="hint tiny">{t('settings.feedbackDesc')}</p>
               <div class="feedback-card">
                 <a
                   class="feedback-email"
-                  href="mailto:sneaker@agent.qq.com?subject=Starmap%20插件反馈"
-                  title="点击发送反馈邮件"
+                  href="mailto:sneaker@agent.qq.com?subject=Starmap%20Feedback"
+                  title="Email feedback"
                 >
                   sneaker@agent.qq.com
                 </a>
@@ -287,9 +285,9 @@ export function SettingsPanel({
                     setCopied(true)
                     setTimeout(() => setCopied(false), 2000)
                   }}
-                  title="复制邮箱地址"
+                  title="Copy email address"
                 >
-                  {copied ? '已复制' : '复制'}
+                  {copied ? t('common.copied') : t('common.copy')}
                 </button>
               </div>
             </section>

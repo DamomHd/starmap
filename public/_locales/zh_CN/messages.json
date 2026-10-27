@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "Starmap 星图 — GitHub 星标管理",
+    "description": "扩展名称"
+  },
+  "appDesc": {
+    "message": "把 GitHub 星标变成一张能记住你为什么 star 的个人仓库地图。",
+    "description": "扩展描述"
+  },
+  "actionTitle": {
+    "message": "打开 Starmap",
+    "description": "扩展图标悬浮提示"
+  }
+}

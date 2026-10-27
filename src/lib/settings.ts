@@ -27,6 +27,13 @@ export interface Settings {
    * - 'light' / 'dark' 手动固定
    */
   theme: 'system' | 'light' | 'dark'
+  /**
+   * 界面语言：
+   * - 'auto' 跟随浏览器语言
+   * - 'zh-CN' 简体中文
+   * - 'en' English
+   */
+  language: 'auto' | 'en' | 'zh-CN'
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -35,6 +42,7 @@ export const DEFAULT_SETTINGS: Settings = {
   showAnnotations: true,
   autoSync: true,
   theme: 'system',
+  language: 'auto',
 }
 
 const KEY = 'settings'

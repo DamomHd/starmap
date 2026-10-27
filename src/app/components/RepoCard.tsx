@@ -15,6 +15,7 @@ import { useState } from 'preact/hooks'
 import type { Repo, Annotation } from '../../lib/github'
 import type { Dimension } from '../../lib/cluster'
 import { AnnotationEditor, type AnnotationDraft } from '../../components/AnnotationEditor'
+import { t } from '../../lib/i18n'
 
 interface Props {
   repo: Repo
@@ -41,14 +42,14 @@ export function RepoCard({ repo, annotation, onTagClick, onPatch }: Props) {
         <a href={repo.html_url} target="_blank" rel="noreferrer" class="repo-name" title={repo.full_name}>
           {repo.full_name}
         </a>
-        {repo.archived && <span class="badge archived">已归档</span>}
+        {repo.archived && <span class="badge archived">{t('cleanup.reasonBadge.archived')}</span>}
       </div>
 
       {repo.description && <p class="repo-desc">{repo.description}</p>}
 
       <div class="repo-meta">
         {repo.language && (
-          <button class="meta-btn lang" onClick={() => onTagClick('language', repo.language!)} title="按此语言过滤">
+          <button class="meta-btn lang" onClick={() => onTagClick('language', repo.language!)} title={t('dimensions.language')}>
             {repo.language}
           </button>
         )}
@@ -58,9 +59,9 @@ export function RepoCard({ repo, annotation, onTagClick, onPatch }: Props) {
       {/* GitHub 自带 topic */}
       {repo.topics.length > 0 && (
         <div class="repo-topics">
-          {repo.topics.slice(0, 6).map((t) => (
-            <button key={t} class="topic-tag" onClick={() => onTagClick('topic', t)} title="按此主题过滤">
-              {t}
+          {repo.topics.slice(0, 6).map((item) => (
+            <button key={item} class="topic-tag" onClick={() => onTagClick('topic', item)} title={t('dimensions.topic')}>
+              {item}
             </button>
           ))}
         </div>
@@ -94,7 +95,7 @@ export function RepoCard({ repo, annotation, onTagClick, onPatch }: Props) {
         />
       ) : (
         <button class="edit-trigger" onClick={() => setEditing(true)}>
-          {annotation?.note || tags.length > 0 ? '编辑备注' : '✎ 记一笔'}
+          {annotation?.note || tags.length > 0 ? t('card.edit') : t('card.addNote')}
         </button>
       )}
     </div>

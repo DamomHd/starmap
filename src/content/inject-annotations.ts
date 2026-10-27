@@ -20,6 +20,7 @@ import { getSettings } from '../lib/settings'
 import { patchAnnotation } from '../lib/annotations'
 import { notifyChanged } from '../lib/notify-change'
 import { AnnotationEditor, type AnnotationDraft } from '../components/AnnotationEditor'
+import { t, resolveLocale, setLocale, getLocale } from '../lib/i18n'
 
 /** 当前过滤条件（模块级状态，供刷新时复用） */
 const filter = {
@@ -181,7 +182,7 @@ function buildAnnotationEl(repoId: number, fullName: string, initialAnn: Annotat
   const trigger = document.createElement('button')
   trigger.type = 'button'
   trigger.className = 'bs-anno-trigger'
-  trigger.textContent = hasContent ? '✎ 编辑' : '✎ 记一笔'
+  trigger.textContent = hasContent ? t('content.edit') : t('card.addNote')
 
   // 没内容时展示行是空的，不占空间
   if (!hasContent) display.style.display = 'none'
@@ -219,7 +220,7 @@ function buildAnnotationEl(repoId: number, fullName: string, initialAnn: Annotat
     } else {
       display.style.display = hasContent ? '' : 'none'
     }
-    trigger.textContent = hasContent ? '✎ 编辑' : '✎ 记一笔'
+    trigger.textContent = hasContent ? t('content.edit') : t('card.addNote')
   }
 
   /** 重绘展示行内容 */
@@ -362,7 +363,14 @@ function renderTagChips() {
   if (tags.length === 0) {
     const hint = document.createElement('span')
     hint.className = 'bs-tag-empty'
-    hint.textContent = lastByName.size === 0 ? '还没有标签，点任意仓库下方的「✎ 记一笔」开始' : '标签还不够多，暂时不显示筛选'
+    hint.textContent =
+      lastByName.size === 0
+        ? getLocale() === 'zh-CN'
+          ? '还没有标签，点任意仓库下方的「✎ 记一笔」开始'
+          : 'No tags yet. Click "Add note" under any repo to start'
+        : getLocale() === 'zh-CN'
+          ? '标签还不够多，暂时不显示筛选'
+          : 'Not enough tags yet'
     row.appendChild(hint)
     return
   }
@@ -486,6 +494,7 @@ async function refresh() {
 
   // 开关关闭时：清除页面上所有已注入的注解，然后退出
   const settings = await getSettings()
+  setLocale(resolveLocale(settings.language))
   if (!settings.showAnnotations) {
     document.querySelectorAll('.bs-anno').forEach((n) => n.remove())
     document

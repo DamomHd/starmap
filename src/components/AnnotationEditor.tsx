@@ -10,6 +10,7 @@
 
 import './annotation-editor.css'
 import { useState } from 'preact/hooks'
+import { t } from '../lib/i18n'
 
 export interface AnnotationDraft {
   note: string
@@ -54,7 +55,7 @@ export function AnnotationEditor({ initial, onSubmit, onCancel, placeholder }: P
     <div class="bs-editor">
       <textarea
         class="bs-note-input"
-        placeholder={placeholder ?? '为什么收藏它？（例：想拿来重写表单校验）'}
+        placeholder={placeholder ?? t('content.noteInputPlaceholder')}
         value={note}
         onInput={(e) => setNote((e.target as HTMLTextAreaElement).value)}
         rows={2}
@@ -76,7 +77,7 @@ export function AnnotationEditor({ initial, onSubmit, onCancel, placeholder }: P
       <div class="bs-tag-add-row">
         <input
           class="bs-tag-input"
-          placeholder="加个标签，回车确认"
+          placeholder={t('content.tagsInputPlaceholder')}
           value={tagInput}
           onInput={(e) => setTagInput((e.target as HTMLInputElement).value)}
           onKeyDown={(e) => {
@@ -87,16 +88,16 @@ export function AnnotationEditor({ initial, onSubmit, onCancel, placeholder }: P
           }}
         />
         <button class="bs-btn bs-btn-ghost" type="button" onClick={addTag}>
-          添加
+          {t('card.addTag')}
         </button>
       </div>
 
       <div class="bs-editor-actions">
         <button class="bs-btn bs-btn-primary" type="button" onClick={submit}>
-          保存
+          {t('common.save')}
         </button>
         <button class="bs-btn bs-btn-ghost" type="button" onClick={onCancel}>
-          取消
+          {t('common.cancel')}
         </button>
       </div>
     </div>

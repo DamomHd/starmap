@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Starmap — Privacy Policy</title>
+<meta name="description" content="Privacy policy for the Starmap Chrome extension: No servers, all data stays in your browser and GitHub account.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1f2328;
+    --muted: #59636e;
+    --border: #d1d9e0;
+    --accent: #0969da;
+    --code-bg: #f6f8fa;
+    --ok: #1a7f37;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117;
+      --fg: #f0f6fc;
+      --muted: #9198a1;
+      --border: #3d444d;
+      --accent: #4493f8;
+      --code-bg: #151b23;
+      --ok: #3fb950;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-star { color: #d4a72c; font-size: 20px; }
+  .brand-name { font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
+  .lang-switch { font-size: 13px; color: var(--muted); }
+  .lang-switch a { color: var(--accent); text-decoration: none; }
+  .lang-switch a:hover { text-decoration: underline; }
+
+  h1 { font-size: 28px; margin: 20px 0 6px; letter-spacing: -0.02em; }
+  h2 {
+    font-size: 19px; margin: 40px 0 12px; padding-top: 20px;
+    border-top: 1px solid var(--border); letter-spacing: -0.01em;
+  }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  h3 { font-size: 15px; margin: 24px 0 8px; color: var(--fg); }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    background: var(--code-bg); padding: 1px 5px; border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em;
+  }
+  .updated { color: var(--muted); font-size: 13px; margin: 0 0 24px; }
+
+  .pledge {
+    border: 1px solid var(--ok);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 24px 0;
+    background: color-mix(in srgb, var(--ok) 5%, transparent);
+  }
+  .pledge-title {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; color: var(--ok); margin-bottom: 6px;
+  }
+  .pledge p { margin: 0; font-size: 14px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border: 1px solid var(--border); }
+  th { background: var(--code-bg); font-weight: 600; }
+  td code { font-size: 0.86em; }
+
+  .ok { color: var(--ok); font-weight: 600; }
+  .no { color: #d1242f; font-weight: 600; }
+  @media (prefers-color-scheme: dark) { .no { color: #f85149; } }
+
+  footer {
+    margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header-row">
+    <div class="brand">
+      <span class="brand-star">★</span>
+      <span class="brand-name">Starmap</span>
+    </div>
+    <div class="lang-switch">
+      <strong>English</strong> | <a href="index.html">简体中文</a>
+    </div>
+  </div>
+
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated: October 27, 2026</p>
+
+  <div class="pledge">
+    <div class="pledge-title">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm3.78 5.28a.75.75 0 0 0-1.06-1.06L7.25 7.69 5.28 5.72a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.06 0Z"/>
+      </svg>
+      Zero servers. Your data stays strictly in your browser and GitHub account.
+    </div>
+    <p>This extension collects, uploads, and shares nothing with any third party.</p>
+  </div>
+
+  <p>Starmap ("this extension") is a browser extension that helps manage GitHub starred repositories. This policy describes what data this extension handles, how it is used, and data sharing guarantees.</p>
+
+  <h2>1. What Information Is Handled</h2>
+  <p>All data is processed <strong>strictly on your local device</strong>.</p>
+
+  <h3>1.1 Information you provide</h3>
+  <table>
+    <thead><tr><th>Data</th><th>Purpose</th><th>Storage Location</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>GitHub Personal Access Token (PAT)</td>
+        <td>Calling GitHub API to read stars and sync to Gist</td>
+        <td>Local browser storage (<code>chrome.storage.local</code>)</td>
+      </tr>
+      <tr>
+        <td>Your notes and tags</td>
+        <td>Helping you recall why you starred a repository</td>
+        <td>Local browser storage; if sync is enabled, saved to <strong>your personal</strong> Secret Gist</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.2 Public information from GitHub</h3>
+  <table>
+    <thead><tr><th>Data</th><th>Source</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Starred repository list (names, descriptions, languages, topics, star counts)</td>
+        <td>GitHub Official API</td>
+        <td>Display, search, and multidimensional clustering</td>
+      </tr>
+      <tr>
+        <td>GitHub username</td>
+        <td>GitHub Official API</td>
+        <td>Displaying current account identity in UI</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>This data is cached locally in your browser for 30 minutes and is <strong>never transmitted to any third party</strong>.</p>
+
+  <h3>1.3 What we never collect</h3>
+  <ul>
+    <li>❌ No browsing history</li>
+    <li>❌ No web page content outside GitHub</li>
+    <li>❌ No device identifiers, IP addresses, or location data</li>
+    <li>❌ No telemetry, click tracking, or analytics</li>
+    <li>❌ No cookies or third-party SDKs</li>
+  </ul>
+
+  <h2>2. How Data Is Used</h2>
+  <p>All data is used exclusively to deliver the core functionality of this extension:</p>
+  <ul>
+    <li><strong>Fetching stars</strong> → Display, filter, and cluster starred repositories</li>
+    <li><strong>Reading username</strong> → Show connected identity in the topbar</li>
+    <li><strong>Notes & tags</strong> → Save your private annotations for instant search</li>
+    <li><strong>PAT token</strong> → Authenticate official requests to GitHub API on your behalf</li>
+  </ul>
+  <p><strong>No other use cases exist. Not used for user profiling, advertising, machine learning model training, or commercial reuse.</strong></p>
+
+  <h2>3. Third-Party Sharing</h2>
+  <p><strong>Zero sharing.</strong> Network requests are strictly limited to:</p>
+  <table>
+    <thead><tr><th>Domain</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>api.github.com</code></td><td>Reading starred repositories and unstarring</td></tr>
+      <tr><td><code>github.com</code></td><td>Accessing your personal Secret Gist for cross-device sync</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4. Data Retention & Control</h2>
+  <table>
+    <tbody>
+      <tr><th>Location</th><td><code>chrome.storage.local</code> (Local browser storage, extension sandbox isolated)</td></tr>
+      <tr><th>Retention</th><td>Retained until you delete entries or uninstall the extension</td></tr>
+      <tr><th>Cache</th><td>Star repository cache expires automatically after 30 minutes</td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. Security</h2>
+  <p>Browser extension code can be unpacked and inspected by design. Therefore, Starmap does not rely on code secrecy to protect your data:</p>
+  <ul>
+    <li>Zero hardcoded API secrets or master keys</li>
+    <li>Your token resides exclusively in your local browser sandbox</li>
+    <li>No central server, eliminating central data breach risks</li>
+  </ul>
+
+  <h2>6. Contact & Feedback</h2>
+  <p>If you have any questions, feedback, or discover any security issues, please contact:</p>
+  <ul>
+    <li>Support Email: <a href="mailto:sneaker@agent.qq.com">sneaker@agent.qq.com</a></li>
+    <li>GitHub Repository: <a href="https://github.com/DamomHd/starmap" target="_blank" rel="noopener noreferrer">https://github.com/DamomHd/starmap</a></li>
+  </ul>
+
+  <h2>Appendix: Permissions Justification</h2>
+  <table>
+    <thead><tr><th>Permission</th><th>Why it is needed</th></tr></thead>
+    <tbody>
+      <tr><td><code>storage</code></td><td>Save tokens, notes, custom tags, and temporary cache locally</td></tr>
+      <tr><td><code>api.github.com</code></td><td>Fetch user stars, sync to Gist, and execute cleanup unstarring</td></tr>
+      <tr><td><code>github.com</code></td><td>Inject filter toolbar on GitHub stars page; access Gist during sync</td></tr>
+    </tbody>
+  </table>
+
+  <footer>
+    Starmap · <a href="https://github.com/DamomHd/starmap" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+  </footer>
+
+</div>
+</body>
+</html>

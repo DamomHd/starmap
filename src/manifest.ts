@@ -11,9 +11,10 @@ declare const process: { env: Record<string, string | undefined> }
  */
 export default defineManifest({
   manifest_version: 3,
-  name: 'Starmap 星图',
+  name: '__MSG_appName__',
   version: '0.1.0',
-  description: '把 GitHub 星标变成一张能记住你为什么 star 的个人仓库地图。',
+  description: '__MSG_appDesc__',
+  default_locale: 'en',
   author: {
     email: 'sneaker@agent.qq.com',
   },
@@ -36,7 +37,7 @@ export default defineManifest({
   },
   // 点击图标时不弹 popup，由 background 打开整页工作台
   action: {
-    default_title: '打开 Starmap',
+    default_title: '__MSG_actionTitle__',
     default_icon: {
       16: 'icon-16.png',
       32: 'icon-32.png',

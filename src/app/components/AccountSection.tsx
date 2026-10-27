@@ -10,6 +10,7 @@
 import { useState, useEffect } from 'preact/hooks'
 import { loadToken, forgetToken, reconnect } from '../../lib/oauth'
 import { probeCapabilities, type TokenCapabilities } from '../../lib/permissions'
+import { t } from '../../lib/i18n'
 
 interface Props {
   login: string
@@ -69,29 +70,29 @@ export function AccountSection({ login, onReconnect, onForget }: Props) {
 
   return (
     <section class="settings-section">
-      <h3>账户</h3>
+      <h3>{t('account.title')}</h3>
 
       <div class="account-row">
         <div class="account-id">
           <span class="account-avatar">{(login || '?')[0].toUpperCase()}</span>
           <div>
-            <div class="account-login">@{login || '未连接'}</div>
-            <div class="account-sub">GitHub 账号</div>
+            <div class="account-login">@{login || t('account.unconnected')}</div>
+            <div class="account-sub">{t('account.accountSub')}</div>
           </div>
         </div>
         <button class="ghost small" onClick={handleReconnect} disabled={!token}>
-          重新连接
+          {t('account.reconnect')}
         </button>
       </div>
 
       {/* Token */}
       <div class="account-field">
-        <span class="account-label">Token</span>
+        <span class="account-label">{t('account.tokenLabel')}</span>
         <div class="account-value">
-          <code class="token-text">{token ? (showFull ? token : maskToken(token)) : '（未保存）'}</code>
+          <code class="token-text">{token ? (showFull ? token : maskToken(token)) : t('account.tokenUnsaved')}</code>
           {token && (
             <button class="link-btn" onClick={() => setShowFull((v) => !v)}>
-              {showFull ? '隐藏' : '显示'}
+              {showFull ? t('account.hide') : t('account.show')}
             </button>
           )}
         </div>
@@ -99,16 +100,16 @@ export function AccountSection({ login, onReconnect, onForget }: Props) {
 
       {/* 权限状态 */}
       <div class="account-field">
-        <span class="account-label">权限</span>
+        <span class="account-label">{t('account.permissions')}</span>
         <div class="account-value">
-          {checking && <span class="muted">检测中…</span>}
+          {checking && <span class="muted">{t('common.loading')}</span>}
           {!checking && caps && (
             <div class="perm-list">
-              <Perm ok={caps.canReadUser} label="读取账号" />
-              <Perm ok={caps.canReadStars} label="读取星标" />
-              <Perm ok={caps.canSync} label="跨设备同步" />
+              <Perm ok={caps.canReadUser} label={t('account.permReadUser')} />
+              <Perm ok={caps.canReadStars} label={t('account.permReadStars')} />
+              <Perm ok={caps.canSync} label={t('account.permGist')} />
               <button class="link-btn" onClick={check}>
-                重新检测
+                {t('common.refresh')}
               </button>
             </div>
           )}
@@ -118,29 +119,24 @@ export function AccountSection({ login, onReconnect, onForget }: Props) {
 
       <div class="account-actions">
         <a class="ghost small link-out" href={TOKEN_MANAGE_URL} target="_blank" rel="noreferrer">
-          去 GitHub 管理 Token ↗
+          GitHub Token ↗
         </a>
         {!confirmForget ? (
           <button class="ghost small danger-text" onClick={() => setConfirmForget(true)}>
-            移除 Token
+            {t('account.forgetToken')}
           </button>
         ) : (
           <span class="confirm-inline">
-            <span>移除后需重新创建，确定？</span>
+            <span>{t('account.forgetConfirm')}</span>
             <button class="ghost small danger-text" onClick={handleForget}>
-              确定移除
+              {t('common.confirm')}
             </button>
             <button class="ghost small" onClick={() => setConfirmForget(false)}>
-              取消
+              {t('common.cancel')}
             </button>
           </span>
         )}
       </div>
-
-      <p class="hint tiny">
-        「重新连接」会用已保存的 Token，不需要重新去 GitHub 创建。
-        只有点「移除 Token」才会真正删除。
-      </p>
     </section>
   )
 }
