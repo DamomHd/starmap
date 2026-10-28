@@ -1,23 +1,129 @@
-# Chrome Web Store 上架文案
+# Chrome Web Store 上架文案 (Store Listing Copy)
 
-## 名称（最多 45 字符）
+Chrome 应用商店**原生完全支持多语言独立配置**。
+推荐配置策略：
+- **默认语言（Default Language）**：设为 **English (United States)**（面向全球所有非中文国家）
+- **附加语言（Additional Language）**：在后台点击 **Add language** 添加 **中文 (简体)**（面向所有中文用户自动展示）
 
+---
+
+# 一、默认语言：English (Default)
+
+### Name (Max 45 chars)
+```
+Starmap — GitHub Stars Manager
+```
+*(Character count: 31 / 45)*
+
+### Summary / Short Description (Max 132 chars)
+```
+Turn your GitHub stars into a searchable, annotated repository map with auto-categorization and inactive star cleanup.
+```
+*(Character count: 120 / 132)*
+
+### Detailed Description
+```
+You have starred hundreds or thousands of repositories on GitHub... but what happens next?
+
+When you actually need a tool, you only remember "that one animation library in React", but can't recall its name. Or you don't even remember you already starred it.
+
+Starmap turns your cluttered stars into an organized, searchable personal repository map.
+
+
+■ Auto-Categorization Without Manual Tagging
+
+Leverages GitHub native topics, languages, authors, and star dates to instantly group your stars into 5 perspectives:
+• By Topic — Find "animation", "cli", or "state-management"
+• By Language — Find "that Rust tool"
+• By Author — Explore all repos you starred from favorite creators
+• By Year — Repos you discovered in specific years
+• By My Tags — Your own customized tags
+
+No need to maintain complex taxonomy trees. Repositories fall into place automatically.
+
+
+■ Never Lose a Repo Again
+
+• Fuzzy Search: Search by repo name, description, topics, plus your private notes and tags (highest relevance weight).
+• Cross-Filtering: Combine filters like "react" + "animation" to narrow down matches.
+• Multi-sorting: Starred date, stars count, last updated, or name.
+
+
+■ Remember Why You Starred It
+
+• Add a one-line note to any repo — e.g., "Use this for form validation in project X".
+• Attach custom tags independent of GitHub's public topics.
+• Auto-sync notes and tags to your personal Secret Gist across devices.
+
+
+■ In-Place Enhancement on GitHub Stars Page
+
+When you visit your own GitHub stars page (github.com/{user}?tab=stars):
+• Top filter toolbar: Search your personal notes and filter by tag pills.
+• Embedded annotation cards: See your notes directly beneath each repository.
+• In-place editing: Click "✎ Edit" to update notes right on GitHub without leaving the page.
+(All enhancements can be toggled on or off in Settings).
+
+
+■ Clean Up Stale Stars Safely
+
+Identify stars you no longer need, grouped by clear reasons:
+• Archived repositories (officially deprecated)
+• Mirror repositories (redundant copies)
+• Forked repositories (abandoned experiments)
+• Inactive for >2 years
+• Never touched since starred
+
+Safe by design: Repositories with personal notes or tags are NEVER suggested for cleanup. Unstarring always requires manual selection and confirmation. Nothing is ever deleted automatically.
+
+
+■ Privacy & Security (Zero Servers)
+
+• No backend servers, no proxies, no custom databases.
+• All API calls go directly to official api.github.com.
+• Your GitHub Token stays strictly in your local browser sandbox.
+• Notes and tags sync only to your own Secret Gist.
+• Zero telemetry, zero tracking, zero third-party analytics SDKs.
+
+Full privacy policy: https://damomhd.github.io/starmap/privacy-en.html
+
+
+■ Getting Started
+
+1. Install Starmap.
+2. Click the extension icon to open the workbench.
+3. Follow the guided step to create a GitHub Personal Access Token (preset with minimal required scopes: read:user and gist).
+4. Paste your token and explore your star map!
+
+
+■ Support & Feedback
+
+If you have questions, feedback, or suggestions, please contact:
+sneaker@agent.qq.com
+
+
+■ Notes
+• Requires a GitHub account
+• Open source: https://github.com/DamomHd/starmap
+```
+
+---
+
+# 二、附加语言：中文 (简体)
+
+> 在 Chrome 开发者后台「商品详情」页面，点击右上角的 **添加语言（Add language）**，选择 **中文 (简体)** 后填入以下内容：
+
+### 名称（最多 45 字符）
 ```
 Starmap 星图 — GitHub 星标管理
 ```
 
-## 简短说明（最多 132 字符）
-
+### 简短说明（最多 132 字符）
 ```
-把 GitHub 星标变成可检索的地图：自动归类、模糊查找、记号记、清理死仓库。无服务器，数据只在你自己手里。
+把 GitHub 星标变成可检索的地图：自动归类、模糊查找、笔记标注、清理失效仓库。无服务器，数据只在你自己手里。
 ```
 
-字符数：约 55（中文字符按 2 计约 110）
-
----
-
-## 详细说明
-
+### 详细说明
 ```
 你 star 了几百上千个仓库，然后呢？
 
@@ -84,7 +190,7 @@ Starmap（星图）解决的就是这件事。
 · 笔记和标签存在本地 + 你自己的 GitHub Gist
 · 无统计、无追踪、无第三方 SDK
 
-完整隐私政策见下方链接。
+完整隐私政策见：https://damomhd.github.io/starmap/
 
 
 ■ 开始使用
@@ -108,66 +214,60 @@ sneaker@agent.qq.com
 
 · 需要 GitHub 账号
 · 仅支持 Chrome（Firefox / Edge 版本尚未适配）
-· 开源，代码可在 GitHub 查看
+· 开源，代码可在 GitHub 查看：https://github.com/DamomHd/starmap
 ```
 
 ---
 
-## 分类
+# 三、通用设置与分类
 
-**主要类别**：开发者工具（Developer Tools）
-
-## 语言
-
-中文（简体）、English
+- **类别（Category）**：开发者工具（Developer Tools）
+- **隐私政策网址（Privacy Policy URL）**：`https://damomhd.github.io/starmap/privacy-en.html`（或中文页 `https://damomhd.github.io/starmap/`）
 
 ---
 
-## 权限说明（上架时需填写）
+# 四、权限与单一用途说明（中英对照）
 
-Chrome 商店上架时，每个权限都要填写理由：
+### 单一用途说明 (Single Purpose Description)
+- **英文（推荐填写）**：
+  > Manage, search, and annotate the user's starred GitHub repositories with custom tags, personal notes, and inactive repository cleanup suggestions.
+- **中文（备用）**：
+  > 帮助用户管理、检索与标注个人的 GitHub 星标（Star）仓库，提供分类查找、添加私有备注与标签，以及识别清理失效仓库的功能。
 
-| 权限 | 用途说明 |
-|---|---|
-| `storage` | 在本地保存你的 Token、备注、标签和 star 数据缓存 |
-| `https://api.github.com/*` | 读取你的 star 列表、取消 star、访问你的 Gist 做跨设备同步 |
-| `https://github.com/*` | 在你的 GitHub 星标页显示工具条和注解，让你原地编辑备注 |
-
----
-
-## 数据使用声明（Chrome 商店表单）
-
-上架时需勾选数据收集类型。本扩展的答案是：
-
-| 问题 | 回答 |
-|---|---|
-| 是否收集个人身份信息 | 否 |
-| 是否收集健康信息 | 否 |
-| 是否收集财务信息 | 否 |
-| 是否收集认证信息 | **是**（GitHub Token，仅本机存储，不上传） |
-| 是否收集个人通信 | 否 |
-| 是否收集位置 | 否 |
-| 是否收集网页浏览活动 | 否 |
-| 是否收集用户活动 | 否 |
-| 是否收集网站内容 | **是**（读取你的 star 列表，用于展示） |
-
-**数据传输承诺**（三项都要勾"不"）：
-- 不出售给第三方
-- 不用于与核心功能无关的用途
-- 不用于判断信用度或放贷
+### 权限理由申报 (Permission Justifications)
+| 权限 | 英文理由 (English Justification) | 中文说明 |
+|---|---|---|
+| `storage` | Used to store user settings, GitHub PAT, local repository notes/tags, and temporary star caches. | 在本地保存你的设置、Token、备注、标签和缓存 |
+| `https://api.github.com/*` | Used to fetch user starred repositories, perform unstar cleanup actions, and sync annotations to user Secret Gist. | 读取你的 star 列表、取消 star、访问你的 Gist 做跨设备同步 |
+| `https://github.com/*` | Injects an unobtrusive toolbar and in-place note editor into the user's GitHub stars page. | 在你的 GitHub 星标页显示工具条和注解，原地编辑备注 |
 
 ---
 
-## 待办清单
+# 五、数据使用声明（Data Usage）
 
-- [ ] 注册 Chrome Web Store 开发者账号（$5，需准备双币信用卡）
-- [x] 推送代码到 GitHub 并开启 GitHub Pages 托管 `docs/index.html`：
-  - **公开隐私政策 URL**：`https://damomhd.github.io/starmap/`
-- [x] 替换 `PRIVACY.md` 与文档中的真实 GitHub 仓库地址（`https://github.com/DamomHd/starmap`）
-- [x] 打包扩展 ZIP 包（运行 `pnpm zip`，已生成无多余缓存、已剔除 key 字段的干净产物）
-- [ ] 登录 Chrome Web Store Developer Console 上传 `starmap-0.1.0-chrome.zip`
-- [ ] 上传应用图标（`dist/icon-128.png`）
-- [ ] 上传应用截图（`store-assets/screenshot-1.png`、`2.png`、`3.png`）
-- [ ] 填写应用上架文案（从本文档复制）
-- [ ] 填写隐私权声明与权限理由（从本文档复制，隐私政策 URL 填 `https://damomhd.github.io/starmap/`）
-- [ ] 提交审核（通常 1~3 个工作日完成）
+Chrome 开发者后台勾选表单：
+- 是否收集个人身份信息 (Personal Identification Info)：**No / 否**
+- 是否收集健康信息 (Health Info)：**No / 否**
+- 是否收集财务信息 (Financial Info)：**No / 否**
+- 是否收集认证信息 (Authentication Info)：**Yes / 是**（GitHub Token, stored strictly locally on the user device）
+- 是否收集个人通信 (Personal Communications)：**No / 否**
+- 是否收集位置 (Location)：**No / 否**
+- 是否收集网页浏览活动 (Web History)：**No / 否**
+- 是否收集用户活动 (User Activity)：**No / 否**
+- 是否收集网站内容 (Website Content)：**Yes / 是**（Read user's starred repositories to display and organize）
+
+**三项数据承诺（Data Transmission Commitments）**：全部勾选符合规定（不会出售、不用于非核心用途、不用于信贷）。
+
+---
+
+# 六、待办清单 (Checklist)
+
+- [ ] 注册 Chrome Web Store 开发者账号（$5 一次性费用）
+- [x] 推送代码到 GitHub 并上线 GitHub Pages 隐私政策（`https://damomhd.github.io/starmap/`）
+- [x] 打包扩展 ZIP 包（运行 `pnpm zip`，已生成无 key 干净发布包）
+- [ ] 登录 Chrome 开发者控制台，默认语言选择 **English (United States)** 并上传 `starmap-0.1.0-chrome.zip`
+- [ ] 粘贴英文版名称、简短说明与详细说明
+- [ ] 点击 **Add language** 添加 **中文 (简体)**，粘贴中文版上架文案
+- [ ] 上传应用图标（`dist/icon-128.png`）与截图（`store-assets/screenshot-*.png`）
+- [ ] 填写单一用途、权限理由与隐私政策 URL
+- [ ] 提交审核（通常 1~3 个工作日）
