@@ -1,11 +1,29 @@
 # 商店素材 (Chrome Web Store Assets)
 
-Chrome Web Store 上架所需的多语言商店素材。
+Chrome Web Store 上架所需的多语言商店素材（屏幕截图 + 宣传图块）。
 
 > 📖 **操作标准与脚本维护**：请参考完整 SOP 文档 [SCREENSHOT_SOP.md](./SCREENSHOT_SOP.md)。  
-> ⚡ **一键重新生成所有截图**：`pnpm screenshots`
+> ⚡ **一键生成截图**：`pnpm screenshots`  
+> ⚡ **一键生成宣传图块**：`pnpm promos`
 
-## 截图文件清单
+---
+
+## 宣传图块清单 (Promotional Tiles)
+
+根据 Chrome Web Store 要求，宣传图块用于在应用店首页、分类列表、搜索推荐以及轮播展板中展示。
+
+| 文件 | 尺寸 | 格式 | 位置与说明 |
+|---|---|---|---|
+| [`promo-small.png`](./promo-small.png) | 440×280 | 24位 PNG (无透明) | **小型宣传图块**（默认英文版，展示于分类与推荐位） |
+| [`promo-marquee.png`](./promo-marquee.png) | 1400×560 | 24位 PNG (无透明) | **顶部宣传图块**（默认英文版，展示于商店首页巨型横幅） |
+| [`en/promo-small.png`](./en/promo-small.png) | 440×280 | 24位 PNG (无透明) | 英文版小型宣传图块 |
+| [`en/promo-marquee.png`](./en/promo-marquee.png) | 1400×560 | 24位 PNG (无透明) | 英文版顶部宣传图块 |
+| [`zh_CN/promo-small.png`](./zh_CN/promo-small.png) | 440×280 | 24位 PNG (无透明) | 中文版小型宣传图块 |
+| [`zh_CN/promo-marquee.png`](./zh_CN/promo-marquee.png) | 1400×560 | 24位 PNG (无透明) | 中文版顶部宣传图块 |
+
+---
+
+## 屏幕截图清单 (Screenshots)
 
 ### 1. 英文默认截图 (Default Language: English)
 用于默认语言（English - United States），面向全球用户：

@@ -6,13 +6,13 @@
 
 ## 1. 规范标准与核心原则
 
-1. **真实呈现原则**：
+1. **真实呈现原则 (屏幕截图)**：
    - **禁止** 使用虚假的营销卡片外框、悬浮浮夸大阴影或无关的营销标语。
    - **必须** 100% 基于插件真实产品代码的 DOM 结构与 GitHub Primer Light 主题视觉还原。
 2. **尺寸与格式规范**：
-   - **分辨率**：严格固定为 **1280 × 800 px**（Chrome 推荐的标准 16:10 比例，无需高分屏缩放变形）。
-   - **色彩模式与格式**：24 位 PNG，无透明通道，背景为 GitHub Primer 纯净白色（`#ffffff`）。
-   - **数量**：每种语言提供 3 ~ 5 张典型功能截图（当前提供 3 张核心功能截图）。
+   - **屏幕截图 (Screenshots)**：严格固定为 **1280 × 800 px**（Chrome 推荐的标准 16:10 比例，24 位 PNG，无透明通道）。
+   - **小型宣传图块 (Small promo tile)**：固定为 **440 × 280 px**（24 位 PNG，无透明通道）。
+   - **顶部宣传图块 (Marquee promo tile)**：固定为 **1400 × 560 px**（24 位 PNG，无透明通道）。
 3. **双语覆盖**：
    - **英文 (en)**：面向全球默认语言（English - United States）。
    - **中文 (zh_CN)**：面向中文市场独立本地化（中文 (简体)）。
@@ -25,28 +25,48 @@
 
 ```text
 store-assets/
-├── SCREENSHOT_SOP.md        # [本文件] 截图生成与维护规范 SOP
+├── SCREENSHOT_SOP.md        # [本文件] 截图与宣传图块生成规范 SOP
 ├── README.md                # 商店素材总览与说明
 ├── LISTING.md               # 商店文案草稿（标题/简短说明/详细描述，双语对照）
 │
-├── en/                      # 英文版标准截图 (1280x800)
-│   ├── screenshot-1.png     # 工作台主视图 (Workbench View & Deep Search)
-│   ├── screenshot-2.png     # 居中清理面板 (Safe Star Cleanup Modal)
-│   └── screenshot-3.png     # GitHub 原位增强 (In-Place Tagging & Banner)
+├── en/                      # 英文版标准素材
+│   ├── screenshot-1.png     # 工作台主视图 (1280x800)
+│   ├── screenshot-2.png     # 居中清理面板 (1280x800)
+│   ├── screenshot-3.png     # GitHub 原位增强 (1280x800)
+│   ├── promo-small.png      # 小型宣传图块 (440x280)
+│   └── promo-marquee.png    # 顶部宣传图块 (1400x560)
 │
-├── zh_CN/                   # 中文版标准截图 (1280x800)
-│   ├── screenshot-1.png     # 中文版主工作台
-│   ├── screenshot-2.png     # 中文版居中清理弹窗
-│   └── screenshot-3.png     # 中文版 GitHub 原位增强
+├── zh_CN/                   # 中文版标准素材
+│   ├── screenshot-1.png     # 中文版主工作台 (1280x800)
+│   ├── screenshot-2.png     # 中文版居中清理弹窗 (1280x800)
+│   ├── screenshot-3.png     # 中文版 GitHub 原位增强 (1280x800)
+│   ├── promo-small.png      # 中文版小型宣传图块 (440x280)
+│   └── promo-marquee.png    # 中文版顶部宣传图块 (1400x560)
 │
-├── screenshot-1.png         # 根目录镜像（自动软链/复制 en/，方便单步拖拽上传默认英文）
+├── screenshot-1.png         # 根目录镜像（同步自 en/，方便单步拖拽上传默认英文）
 ├── screenshot-2.png
-└── screenshot-3.png
+├── screenshot-3.png
+├── promo-small.png          # 根目录镜像（小型宣传图块 440x280）
+└── promo-marquee.png        # 根目录镜像（顶部宣传图块 1400x560）
 ```
 
 ---
 
-## 3. 一键生成截图 (自动化命令)
+## 3. 一键生成命令 (自动化脚本)
+
+项目内置自动化脚本，依赖本地无头浏览器（Headless Chrome）精准执行离线渲染与快照。
+
+### 1) 生成屏幕截图 (1280×800)
+```bash
+pnpm screenshots
+# 或 npm run screenshots
+```
+
+### 2) 生成宣传图块 (440×280 & 1400×560)
+```bash
+pnpm promos
+# 或 npm run promos
+```
 
 项目已内置自动化截图脚本 `scripts/generate-screenshots.mjs`，依赖本地无头浏览器（Headless Chrome）精准执行离线无网络依赖的渲染与快照。
 
@@ -133,9 +153,10 @@ sips -g pixelWidth -g pixelHeight store-assets/en/*.png store-assets/zh_CN/*.png
 
 1. 打开 [Chrome 开发者信息中心 (Developer Dashboard)](https://chrome.google.com/webstore/devconsole/)。
 2. 进入 Starmap 扩展项，点击左侧 **「商品详情 (Store listing)」**：
-   - **默认语言 (English)**：
-     - 在「屏幕截图 (Screenshots)」区域，直接选择 `store-assets/screenshot-1.png`、`screenshot-2.png`、`screenshot-3.png`（或从 `store-assets/en/` 拖入）。
-   - **额外语言 (中文 (简体))**：
-     - 在顶部或管理语言下拉菜单中选择「中文 (简体)」。
-     - 切换到该语言的「屏幕截图」区域，上传 `store-assets/zh_CN/` 目录下的 3 张截图。
+   - **屏幕截图 (Screenshots - 1280×800)**：
+     - 默认英文：上传 `store-assets/screenshot-1..3.png`（或 `store-assets/en/`）。
+     - 中文语言：切换至「中文 (简体)」，上传 `store-assets/zh_CN/screenshot-1..3.png`。
+   - **宣传图块 (Promotional Tiles)**：
+     - **小型宣传图块 (Small promo tile - 440×280)**：上传 `store-assets/promo-small.png`（或 `en/` / `zh_CN/` 对应文件）。
+     - **顶部宣传图块 (Marquee promo tile - 1400×560)**：上传 `store-assets/promo-marquee.png`（或 `en/` / `zh_CN/` 对应文件）。
 3. 检查预览无误后，点击右上角 **「保存草稿」** 或 **「提交审核」**。
