@@ -1,6 +1,6 @@
 {
   "name": "better-stars",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "把 GitHub 星标变成一张能记住你为什么 star 的个人仓库地图。",
   "author": "sneaker <sneaker@agent.qq.com>",
   "bugs": {
@@ -12,7 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
-    "zip": "rm -rf dist starmap-*.zip && pnpm build && cd dist && zip -r ../starmap-0.1.0-chrome.zip . -x '*.DS_Store' -x '__MACOSX*'"
+    "zip": "rm -rf dist starmap-*.zip && pnpm build && cd dist && zip -r ../starmap-0.1.1-chrome.zip . -x '*.DS_Store' -x '__MACOSX*'"
   },
   "dependencies": {
     "minisearch": "^7.2.0",
