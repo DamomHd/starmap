@@ -2,6 +2,9 @@
 
 Chrome Web Store 上架所需的多语言商店素材。
 
+> 📖 **操作标准与脚本维护**：请参考完整 SOP 文档 [SCREENSHOT_SOP.md](./SCREENSHOT_SOP.md)。  
+> ⚡ **一键重新生成所有截图**：`pnpm screenshots`
+
 ## 截图文件清单
 
 ### 1. 英文默认截图 (Default Language: English)
