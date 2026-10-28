@@ -36,6 +36,9 @@ export function resolveLocale(setting?: Settings['language']): SupportedLocale {
 /** 设置当前运行时的语言 */
 export function setLocale(locale: SupportedLocale): void {
   currentLocale = locale
+  if (typeof document !== 'undefined' && document.documentElement) {
+    document.documentElement.lang = locale
+  }
 }
 
 /** 获取当前运行时的语言 */

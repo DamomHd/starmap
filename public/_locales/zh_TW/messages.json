@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "Starmap 星圖 — GitHub 星標管理",
+    "description": "擴充功能名稱"
+  },
+  "appDesc": {
+    "message": "把 GitHub 星標變成一張能記住你為什麼 star 的個人儲存庫地圖。",
+    "description": "擴充功能描述"
+  },
+  "actionTitle": {
+    "message": "開啟 Starmap",
+    "description": "擴充功能圖示懸浮提示"
+  }
+}
