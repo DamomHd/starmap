@@ -15,12 +15,27 @@ export interface StoredToken {
   disconnected?: boolean
 }
 
+/** 清理并标准化用户粘贴的 token 字符串（去除前后空格、引号、以及误粘的 Bearer/token 前缀） */
+export function cleanToken(raw: string): string {
+  let t = raw.trim()
+  if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) {
+    t = t.slice(1, -1).trim()
+  }
+  if (t.toLowerCase().startsWith('bearer ')) {
+    t = t.slice(7).trim()
+  } else if (t.toLowerCase().startsWith('token ')) {
+    t = t.slice(6).trim()
+  }
+  return t
+}
+
 /** 校验 token 是否有效：调 /user，成功则输出用户名 */
 export async function validateToken(token: string): Promise<{ login: string }> {
+  const t = cleanToken(token)
   const res = await fetch('https://api.github.com/user', {
     headers: {
       Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${token.trim()}`,
+      Authorization: `Bearer ${t}`,
       'X-GitHub-Api-Version': '2022-11-28',
     },
   })
@@ -36,7 +51,8 @@ export async function validateToken(token: string): Promise<{ login: string }> {
 
 /** 保存 token 到本地 */
 export async function saveToken(token: string): Promise<void> {
-  await chrome.storage.local.set({ token: { access_token: token.trim() } })
+  const t = cleanToken(token)
+  await chrome.storage.local.set({ token: { access_token: t } })
 }
 
 /**

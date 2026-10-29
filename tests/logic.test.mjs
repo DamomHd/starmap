@@ -363,3 +363,27 @@ test('分组：已归档优先于 fork（权重更高）', () => {
 test('分组：空列表返回空数组', () => {
   assert.deepEqual(groupByReason([]), []);
 });
+
+// ─────────── 复刻自 src/lib/oauth.ts ───────────
+function cleanToken(raw) {
+  let t = raw.trim();
+  if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) {
+    t = t.slice(1, -1).trim();
+  }
+  if (t.toLowerCase().startsWith('bearer ')) {
+    t = t.slice(7).trim();
+  } else if (t.toLowerCase().startsWith('token ')) {
+    t = t.slice(6).trim();
+  }
+  return t;
+}
+
+test('cleanToken: 清理空格、引号与 Bearer/token 前缀', () => {
+  assert.equal(cleanToken('  ghp_123456  '), 'ghp_123456');
+  assert.equal(cleanToken('"ghp_123456"'), 'ghp_123456');
+  assert.equal(cleanToken("'ghp_123456'"), 'ghp_123456');
+  assert.equal(cleanToken('Bearer ghp_123456'), 'ghp_123456');
+  assert.equal(cleanToken('bearer ghp_123456'), 'ghp_123456');
+  assert.equal(cleanToken('token ghp_123456'), 'ghp_123456');
+  assert.equal(cleanToken('  "Bearer ghp_123456"  '), 'ghp_123456');
+});

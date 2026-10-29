@@ -9,6 +9,8 @@
  * 挑轻量的 GET 接口，靠状态码判断权限是否存在，不消耗敏感额度。
  */
 
+import { cleanToken } from './oauth'
+
 export interface TokenCapabilities {
   /** 能否读取用户信息（最基本的可用性） */
   canReadUser: boolean
@@ -20,6 +22,8 @@ export interface TokenCapabilities {
   canSync: boolean
   /** 登录名，canReadUser 为 true 时才有 */
   login?: string
+  /** 校验失败原因代码（BAD_CREDENTIALS | FORBIDDEN | NETWORK_ERROR 等） */
+  error?: 'BAD_CREDENTIALS' | 'FORBIDDEN' | 'NETWORK_ERROR' | string
 }
 
 const HEADERS = (token: string) => ({
@@ -46,24 +50,33 @@ async function probe(token: string, url: string): Promise<boolean> {
  * 实际以执行时是否 403 为准。
  */
 export async function probeCapabilities(token: string): Promise<TokenCapabilities> {
-  const t = token.trim()
+  const t = cleanToken(token)
 
   // 1. 读用户信息：最基本的能力
   let login: string | undefined
   let canReadUser = false
+  let error: TokenCapabilities['error']
+
   try {
     const res = await fetch('https://api.github.com/user', { headers: HEADERS(t) })
     if (res.ok) {
       const u = await res.json()
       login = u.login
       canReadUser = true
+    } else if (res.status === 401) {
+      error = 'BAD_CREDENTIALS'
+    } else if (res.status === 403) {
+      error = 'FORBIDDEN'
+    } else {
+      error = `HTTP_${res.status}`
     }
   } catch {
     canReadUser = false
+    error = 'NETWORK_ERROR'
   }
 
   if (!canReadUser) {
-    return { canReadUser: false, canReadStars: false, canUnstar: false, canSync: false }
+    return { canReadUser: false, canReadStars: false, canUnstar: false, canSync: false, error }
   }
 
   // 2. 并行探测其余能力

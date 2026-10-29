@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from 'preact/hooks'
 import { probeCapabilities, describeMissing, type TokenCapabilities } from '../../lib/permissions'
-import { loadToken, reconnect } from '../../lib/oauth'
+import { loadToken, reconnect, saveToken, cleanToken } from '../../lib/oauth'
 import { t } from '../../lib/i18n'
 
 type TokenKind = 'fine' | 'classic'
@@ -42,12 +42,12 @@ export function LoginGuide({ onConnected }: Props) {
       const token = await reconnect()
       if (!token) {
         setSavedToken('')
-        setError('No token available locally')
+        setError(t('login.errorNoLocalToken'))
         return
       }
       const result = await probeCapabilities(token)
       if (!result.canReadUser) {
-        setError('Token expired or revoked on GitHub')
+        setError(t('login.errorExpired'))
         return
       }
       onConnected(result.login ?? '')
@@ -64,27 +64,41 @@ export function LoginGuide({ onConnected }: Props) {
   }
 
   async function connect() {
-    if (!pat.trim()) {
-      setError('Please paste a Token')
+    const raw = pat.trim()
+    if (!raw) {
+      setError(t('login.errorEmpty'))
       return
     }
+    const token = cleanToken(raw)
     setBusy(true)
     setError('')
     setCaps(null)
 
     try {
-      const result = await probeCapabilities(pat)
+      const result = await probeCapabilities(token)
       if (!result.canReadUser) {
-        setError('Token invalid or expired. Check scopes and expiration.')
+        if (result.error === 'BAD_CREDENTIALS') {
+          setError(t('login.errorBadCredentials'))
+        } else if (result.error === 'FORBIDDEN') {
+          setError(t('login.errorForbidden'))
+        } else if (result.error === 'NETWORK_ERROR') {
+          setError(t('login.errorNetwork'))
+        } else {
+          setError(t('login.errorInvalid'))
+        }
         return
       }
 
       setCaps(result)
 
       if (!result.canReadStars) {
-        setError('This token lacks permission to read stars.')
+        setError(t('login.errorNoStars'))
         return
       }
+
+      // 将校验通过的 token 持久化至 chrome.storage.local，供工作台与所有 API 调用使用
+      await saveToken(token)
+      setSavedToken(token)
 
       onConnected(result.login ?? '')
     } catch (e) {
