@@ -265,7 +265,7 @@ Chrome 开发者后台勾选表单：
 - [ ] 注册 Chrome Web Store 开发者账号（$5 一次性费用）
 - [x] 推送代码到 GitHub 并上线 GitHub Pages 隐私政策（`https://damomhd.github.io/starmap/`）
 - [x] 打包扩展 ZIP 包（运行 `pnpm zip`，已生成无 key 干净发布包）
-- [ ] 登录 Chrome 开发者控制台，默认语言选择 **English (United States)** 并上传 `starmap-0.1.1-chrome.zip`
+- [ ] 登录 Chrome 开发者控制台，默认语言选择 **English (United States)** 并上传 `starmap-0.1.2-chrome.zip`
 - [ ] 粘贴英文版名称、简短说明与详细说明
 - [ ] 点击 **Add language** 添加 **中文 (简体)**，粘贴中文版上架文案
 - [ ] 上传应用图标（`dist/icon-128.png`）与截图（`store-assets/screenshot-*.png`）

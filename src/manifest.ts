@@ -12,7 +12,7 @@ declare const process: { env: Record<string, string | undefined> }
 export default defineManifest({
   manifest_version: 3,
   name: '__MSG_appName__',
-  version: '0.1.1',
+  version: '0.1.2',
   description: '__MSG_appDesc__',
   default_locale: 'en',
   author: {
